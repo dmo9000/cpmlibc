@@ -19,7 +19,7 @@ bump-build: build-id build-id.h
 clean-arf:
 	find . -name "*.arf" -print -exec rm -f {} \;
 
-clean:	tools-clean libraries-clean examples-clean 
+clean:	tools-clean libraries-clean  
 	rm -f $(BIN_DIR)/*
 	rm -f $(CAT_DIR)/*.asm $(CAT_DIR)/*.sym $(CAT_DIR)/*.lst $(CAT_DIR)/*.rel
 	rm -f $(FDUMP_DIR)/*.asm $(FDUMP_DIR)/*.sym $(FDUMP_DIR)/*.lst $(FDUMP_DIR)/*.rel
@@ -37,25 +37,3 @@ install: libraries-install
 
 include tools.mk # Local tools
 include libraries.mk # Libraries
-include examples.mk # Examples
-include src/cat/cat.mk
-include src/cls/cls.mk
-include src/getopt/getopt.mk
-include src/fdump/fdump.mk
-include src/bogomips/bogomips.mk
-include src/tstansi/tstansi.mk
-include src/format/format.mk
-include src/fstat/fstat.mk
-include src/cvi/cvi.mk
-include src/readrip/readrip.mk
-include src/getfont/getfont.mk
-include src/setfont/setfont.mk
-include src/telnet/telnet.mk
-include src/iotest/iotest.mk
-include src/malltest/malltest.mk
-include src/cpstest/cpstest.mk
-include src/randtest/randtest.mk
-include src/lifegame/lifegame.mk
-include src/testlibc/testlibc.mk
-include esrc/bios/bios.mk
-include esrc/osz/osz.mk
