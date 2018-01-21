@@ -27,10 +27,6 @@ clean:	tools-clean libraries-clean
 	find . -name "*.sym" -exec rm -f {} \;
 	find . -name "*.lst" -exec rm -f {} \;
 	find . -name "*.asm" -exec rm -f {} \;
-	rm -f oem*.arc
-	cd libs/liblzf-3.6-orig && make clean
-	cd pngrip && make clean
-	cd fonts/8x8 && make clean
 
 
 install: libraries-install 
