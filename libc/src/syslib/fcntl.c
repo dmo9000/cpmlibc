@@ -14,7 +14,7 @@
 #include "tty.h"
 
 /*
-		If you are writing an emulator at BDOS level, you need to be aware of how CP/M uses the bytes EX, S2, and CR. Some programs (such as the Digital Research linker, 
+		If you are writing an emulator at BDOS level, you need to be aware of how CP/M uses the bytes EX, S2, and CR. Some programs (such as the Digital Research linker,
 		LINK.COM) manipulate these bytes to perform "seek" operations in files without using the random-access calls.
 
 			CR = current record,   ie (file pointer % 16384)  / 128
@@ -136,7 +136,7 @@ int stat(char *pathname, struct stat *buf)
     int rval = 0;
     char *ptr = NULL;
     uint8_t current_extent = 0; /* 16K block index */
-		uint8_t module_number = 0; /* 512K block index */
+    uint8_t module_number = 0; /* 512K block index */
     uint16_t num_records = 0; /* number of 128 byte blocks */
     int i = 0;
     bool completed = false;
@@ -166,60 +166,60 @@ int stat(char *pathname, struct stat *buf)
         cpm_setFCBname(_filename, _filetype, (FCB*) fcb_ptr);
         fcb_ptr->ex = (current_extent % EXTENTS_PER_MODULE);
         //fcb_ptr->ex = (current_extent);
-				module_number = (uint8_t) (current_extent / EXTENTS_PER_MODULE);  
-				//fcb_ptr->resv = (0x80 +  module_number) << 8;
-				//fcb_ptr->resv =0x8080 +  module_number;
-			if (module_number) {
-				fcb_ptr->resv = 0x8081;
-				} else {
-				fcb_ptr->resv = 0x8080;
-				}
-				printf("offset = %lu\n", (uint32_t) ((num_records * 128)));
-				printf("extent = %u (%u)\n", (current_extent % EXTENTS_PER_MODULE), current_extent);
-				printf("module_number = %02x\n", module_number);
-				printf("fcp_ptr->resv = 0x%04x\n", fcb_ptr->resv);
+        module_number = (uint8_t) (current_extent / EXTENTS_PER_MODULE);
+        //fcb_ptr->resv = (0x80 +  module_number) << 8;
+        //fcb_ptr->resv =0x8080 +  module_number;
+        if (module_number) {
+            fcb_ptr->resv = 0x8081;
+        } else {
+            fcb_ptr->resv = 0x8080;
+        }
+        printf("offset = %lu\n", (uint32_t) ((num_records * 128)));
+        printf("extent = %u (%u)\n", (current_extent % EXTENTS_PER_MODULE), current_extent);
+        printf("module_number = %02x\n", module_number);
+        printf("fcp_ptr->resv = 0x%04x\n", fcb_ptr->resv);
         rval = cpm_performFileOp(fop_open, fcb_ptr);
-				printf("stat(%d, %d)\n", rval, fcb_ptr->rc);
+        printf("stat(%d, %d)\n", rval, fcb_ptr->rc);
         _print_fcb(fcb_ptr, false);
 
-				if (module_number > 1) {
-						printf("module number = %d (too large, limit 1M)\n", module_number);
-						goto done_counting;
-						}	
+        if (module_number > 1) {
+            printf("module number = %d (too large, limit 1M)\n", module_number);
+            goto done_counting;
+        }
 
         switch(rval) {
         case 0xFF:
             errno = ENOENT;
             return -1;
             break;
-				case 0:
-				case 1:
-				case 2:
-				case 3:
+        case 0:
+        case 1:
+        case 2:
+        case 3:
             /* examine the FCB in more detail */
             //_print_fcb(fcb_ptr, false);
-						switch (fcb_ptr->rc) {
-							case 0x00:
-								/* no blocks in extent - we are finished */
-								printf("fcb_ptr->rc = %d, rval = %d\n", fcb_ptr->rc, rval);
-								printf("(empty extent?)\n");
-								goto done_counting;
-								break;
-							default:
-								printf("fcb_ptr->rc = %d, rval = %d\n", fcb_ptr->rc, rval);
+            switch (fcb_ptr->rc) {
+            case 0x00:
+                /* no blocks in extent - we are finished */
+                printf("fcb_ptr->rc = %d, rval = %d\n", fcb_ptr->rc, rval);
+                printf("(empty extent?)\n");
+                goto done_counting;
+                break;
+            default:
+                printf("fcb_ptr->rc = %d, rval = %d\n", fcb_ptr->rc, rval);
                 printf("%s", TTY_FOREGROUND_PURPLE);
                 num_records += fcb_ptr->rc;
                 printf("[multi-extent %u file:%u blocks (so far)]\n", current_extent, num_records);
                 current_extent++;
                 printf("%s", TTY_FOREGROUND_WHITE);
-								break;
+                break;
 
             }
             break;
-					default:
-						printf("unhandled, rval = %d\n", rval);
-						exit(1);
-						break;
+        default:
+            printf("unhandled, rval = %d\n", rval);
+            exit(1);
+            break;
         }
     }
 
@@ -405,7 +405,7 @@ ssize_t write(int fd, void *buf, size_t count)
     }
 
 //    required_extent = (uint16_t) ((uint16_t) CFD[fd].offset / (uint16_t) EXTENT_SIZE);
-	  required_module = (CFD[fd].offset / 524288);
+    required_module = (CFD[fd].offset / 524288);
     required_extent = (CFD[fd].offset / 16384);
     required_block = (CFD[fd].offset / 128);
     required_block -= (required_extent * 0x80);
@@ -442,7 +442,7 @@ ssize_t write(int fd, void *buf, size_t count)
 #ifdef DEBUG_LIBCIO_WRITE
     printf("%s", TTY_FOREGROUND_RED);
     printf("\r\nwrite ret.val=%02X, ret_ba=0x%04x ret_hl=0x%04x\n", rval, ret_ba, ret_hl);
-    printf("\toffset ->\t%lu\n", CFD[fd].offset); 
+    printf("\toffset ->\t%lu\n", CFD[fd].offset);
     printf("\tex     ->\t%02X\n",fcb_ptr->ex);
     printf("\trc     ->\t%02X\n",fcb_ptr->rc);
     printf("\tsreq   ->\t%02X\n",fcb_ptr->seqreq);
@@ -498,7 +498,7 @@ ssize_t read(int fd, void *buf, size_t count)
     int rd = 0;
     int start_offset = 0;
     int limit = SSIZE_MAX;
-		uint16_t required_module = 0;
+    uint16_t required_module = 0;
     uint16_t required_extent = 0;
     uint16_t required_block = 0;
     if (!_fds_init_done) {
@@ -547,7 +547,7 @@ ssize_t read(int fd, void *buf, size_t count)
 
     fcb_ptr->rrec = 0x0000;
     fcb_ptr->rrecob = 0x00;
-	fcb_ptr->resv = 0x8000 + (0x80 + required_module);
+    fcb_ptr->resv = 0x8000 + (0x80 + required_module);
     cpm_setDMAAddr((uint16_t)dma_buffer);
     rval = cpm_performFileOp(fop_readSeqRecord, fcb_ptr);
     ret_ba = get_ret_ba();
@@ -576,7 +576,7 @@ ssize_t read(int fd, void *buf, size_t count)
         switch(cpm_err) {
         case 0x01:
             /* end of file - return 0 to caller, clear errno */
-						printf("/* read() hit EOF */\n");
+            printf("/* read() hit EOF */\n");
             errno = 0;
             return 0;
             break;
@@ -603,7 +603,7 @@ ssize_t read(int fd, void *buf, size_t count)
     CFD[fd].offset += limit;
 
     errno = 0;
-    
+
     return limit;
 }
 
@@ -663,15 +663,15 @@ FILE *fopen(const char *path, const char *mode)
     }
 
 
-		/*
+    /*
     if (stat ((const char *) path, &statbuf) == 0) {
-        // save the size of the file if it is available to th
-				// stream->_limit field 
-        initial_size = statbuf.st_size;
-        } else {
-        initial_size = 0;
-        }
-   	*/ 
+    // save the size of the file if it is available to th
+    		// stream->_limit field
+    initial_size = statbuf.st_size;
+    } else {
+    initial_size = 0;
+    }
+    */
 
     errno = 0;
     fd = open(path, oflags);
@@ -721,7 +721,7 @@ int fseek(FILE *stream, long offset, int whence)
         return -1;
     }
 
-  //printf("\r\n+fseek(FILE=0x%04x[%d], %ld, %d)\n", stream, stream->_file, offset, whence);
+    //printf("\r\n+fseek(FILE=0x%04x[%d], %ld, %d)\n", stream, stream->_file, offset, whence);
 
     /* success */
 
@@ -784,7 +784,7 @@ size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream)
             //exit(1);
             if (ftell(stream) != stream->_limit) {
                 printf("HARD EOF REACHED, BUT LIMIT IS MISMATCHED\n");
-                } 
+            }
         }
 
         if (rd == -1) {
@@ -813,16 +813,16 @@ size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream)
         /* if the file was not opened in binary mode, we should respect that character 0x1A is the EOF marker */
         eofptr = memchr((const char *) ptr, 0x1A, size * nmemb);
         if (eofptr) {
-            stream->_limit = CFD[stream->_file].offset + (eofptr - ptr);  
+            stream->_limit = CFD[stream->_file].offset + (eofptr - ptr);
             stream->_eof = true;
             //CFD[stream->_file].offset = stream->_limit;
-            //printf("current offset = %lu\n", CFD[stream->_file].offset); 
+            //printf("current offset = %lu\n", CFD[stream->_file].offset);
             //`printf("rewind = %d\n", (SSIZE_MAX - (eofptr - ptr)));
             CFD[stream->_file].offset -= (SSIZE_MAX - (eofptr - ptr));
-            stream->_limit = CFD[stream->_file].offset;           
+            stream->_limit = CFD[stream->_file].offset;
         } else {
         }
-    } 
+    }
 
 
     errno = 0;

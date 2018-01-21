@@ -207,14 +207,22 @@ term_reset ()
 
       switch (TERM) {
         case TERM_AMSTRAD3:
-			break;
+						printf("+++ Not supported.\n");
+						exit(1);
+						break;
         case TERM_VT52:
+						printf("+++ Not supported.\n");
+						exit(1);
             break;
         case TERM_ANSI:
+            printf ("%c[37m%c[40m%cc", CHAR_ESCAPE, CHAR_ESCAPE, CHAR_ESCAPE);
+            break;
         case TERM_VT100:
             printf ("%c[37m%c[40m%cc", CHAR_ESCAPE, CHAR_ESCAPE, CHAR_ESCAPE);
             break;
         default:
+						printf("+++ Not supported.\n");
+						exit(1);
             break;
         };
    	return; 
@@ -227,15 +235,22 @@ clear_screen ()
 
    switch (TERM) {
         case TERM_AMSTRAD3:
+						printf("+++ Not supported.\n");
+						exit(1);
         case TERM_VT52:
             printf ("%cH%cJ", CHAR_ESCAPE, CHAR_ESCAPE);
             break;
         case TERM_ANSI:
+            printf ("%c[H%c[2J", CHAR_ESCAPE, CHAR_ESCAPE);
+            printf ("%c[1;1H", CHAR_ESCAPE);
+						break;
         case TERM_VT100:
             printf ("%c[H%c[2J", CHAR_ESCAPE, CHAR_ESCAPE);
             printf ("%c[1;1H", CHAR_ESCAPE);
             break;
         default:
+						printf("+++ Not supported.\n");
+						exit(1);
             break;
         };
 
@@ -248,14 +263,22 @@ set_cursor(int x, int y)
    //printf("setcursor(%d, %d)\n", x, y);
    switch (TERM) {
         case TERM_AMSTRAD3:
+						printf("+++ Not supported.\n");
+						exit(1);
         case TERM_VT52:
+						printf("+++ Not supported.\n");
+						exit(1);
             break;
         case TERM_ANSI:
+            printf ("%c[%d;%dH", CHAR_ESCAPE, y+1, x+1);
+						break;
         case TERM_VT100:
             printf ("%c[%d;%dH", CHAR_ESCAPE, y+1, x+1);
             //printf("ANSI_setcursor(%d,%d)", x, y); 
             break;
         default:
+						printf("+++ Not supported.\n");
+						exit(1);
             break;
         };
 
@@ -283,9 +306,12 @@ void set_reverse(bool state)
    switch (TERM) {
         case TERM_AMSTRAD3:
             printf("%cq", CHAR_ESCAPE);
+						break;
         case TERM_VT52:
             break;
         case TERM_ANSI:
+            printf("%c[27m", CHAR_ESCAPE);
+            break;
         case TERM_VT100:
             printf("%c[27m", CHAR_ESCAPE);
             break;

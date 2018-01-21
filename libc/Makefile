@@ -10,7 +10,9 @@ MIRRORS=/media/sf_OSZ/systems/199c4422-9790-11e7-be3e-0800278237b3 /media/sf_OSZ
 IMGDIRS := $(shell ls -1  /media/sf_OSZ/systems/ 2>/dev/null )
 THISBUILDID := $(shell cat build-id )
 
-all: 	bump-build tools libraries 
+#all: 	bump-build tools libraries 
+all: 	bump-build libraries 
+
 
 bump-build: build-id build-id.h
 	./build-id.sh	
@@ -19,7 +21,9 @@ bump-build: build-id build-id.h
 clean-arf:
 	find . -name "*.arf" -print -exec rm -f {} \;
 
-clean:	tools-clean libraries-clean  
+#clean:	tools-clean libraries-clean  
+clean:	libraries-clean  
+
 	rm -f $(BIN_DIR)/*
 	rm -f $(CAT_DIR)/*.asm $(CAT_DIR)/*.sym $(CAT_DIR)/*.lst $(CAT_DIR)/*.rel
 	rm -f $(FDUMP_DIR)/*.asm $(FDUMP_DIR)/*.sym $(FDUMP_DIR)/*.lst $(FDUMP_DIR)/*.rel
@@ -31,5 +35,5 @@ clean:	tools-clean libraries-clean
 
 install: libraries-install 
 
-include tools.mk # Local tools
+#include tools.mk # Local tools
 include libraries.mk # Libraries
