@@ -23,24 +23,22 @@ MOVE = mv
 SED = sed
 
 # Project directories
-SRC_DIR = src/
+SRC_DIR = src
 CPM_SRC_DIR = $(SRC_DIR)/cpm
 SYSLIB_SRC_DIR = $(SRC_DIR)/syslib
 HWLIB_SRC_DIR = $(SRC_DIR)/hw
-BIN_DIR = bin/
+BIN_DIR = bin
 
-LSRC_DIR = lsrc/
-LBIN_DIR = lbin/
+LSRC_DIR = lsrc
+LBIN_DIR = lbin
+ESRC_DIR = esrc
 
-ESRC_DIR = esrc/
-
-INCLUDE_DIR = -I$(SRC_DIR)/include -I$(SRC_DIR)
+INCLUDE_DIR = -I$(SRC_DIR)/include
 
 # Compilation / Assembly / Linking flags
-CCC_FLAGS = -D__CPM__ --std-c99 --fverbose-asm -c -mz80 --opt-code-size -D__SDCC__=1 $(INCLUDE_DIR) --max-allocs-per-node $(MAXALLOCS)
-ECCC_FLAGS = -D__CPM__ --std-c99 --fverbose-asm -mz80 --opt-code-size -D__SDCC__=1 $(EXAMPLES_INCLUDE_DIR) --max-allocs-per-node $(MAXALLOCS) -c 
+CCC_FLAGS = -D__CPM__ -D__SDCC__=1 --std-c99 --fverbose-asm -c -mz80 --opt-code-size --max-allocs-per-node $(MAXALLOCS) $(INCLUDE_DIR)
 
 
-CAS_FLAGS = -plosff 
-CLD_FLAGS = 
+CAS_FLAGS = -plosff
+CLD_FLAGS =
 

@@ -4,14 +4,14 @@ MAXALLOCS=50000
 
 include common.mk
 
-CFLAGS = --std-c99 --fverbose-asm 
+CFLAGS = --std-c99 --fverbose-asm
 CLD_FLAGS=-k /usr/share/sdcc/lib/z80/
 MIRRORS=/media/sf_OSZ/systems/199c4422-9790-11e7-be3e-0800278237b3 /media/sf_OSZ/systems/199c4422-9790-11e7-be3e-0800278237b3 /media/sf_OSZ/systems/199c4422-9790-11e7-be3e-0800278237b3
 IMGDIRS := $(shell ls -1  /media/sf_OSZ/systems/ 2>/dev/null )
 THISBUILDID := $(shell cat build-id )
 
-#all: 	bump-build tools libraries 
-all: 	bump-build libraries 
+#all: 	bump-build tools libraries
+all: 	bump-build libraries
 
 
 bump-build: build-id build-id.h
@@ -21,8 +21,8 @@ bump-build: build-id build-id.h
 clean-arf:
 	find . -name "*.arf" -print -exec rm -f {} \;
 
-#clean:	tools-clean libraries-clean  
-clean:	libraries-clean  
+#clean:	tools-clean libraries-clean
+clean:	libraries-clean
 
 	rm -f $(BIN_DIR)/*
 	rm -f $(CAT_DIR)/*.asm $(CAT_DIR)/*.sym $(CAT_DIR)/*.lst $(CAT_DIR)/*.rel
@@ -33,7 +33,7 @@ clean:	libraries-clean
 	find . -name "*.asm" -exec rm -f {} \;
 
 
-install: libraries-install 
+install: libraries-install
 
 #include tools.mk # Local tools
 include libraries.mk # Libraries
