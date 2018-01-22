@@ -23,9 +23,6 @@ clean-arf:
 
 clean:	libraries-clean
 
-	rm -f $(BIN_DIR)/*
-	rm -f $(CAT_DIR)/*.asm $(CAT_DIR)/*.sym $(CAT_DIR)/*.lst $(CAT_DIR)/*.rel
-	rm -f $(FDUMP_DIR)/*.asm $(FDUMP_DIR)/*.sym $(FDUMP_DIR)/*.lst $(FDUMP_DIR)/*.rel
 	find . -name "*.rel" ! -name "isr0.rel" -exec rm -f {} \;
 	find . -name "*.sym" -exec rm -f {} \;
 	find . -name "*.lst" -exec rm -f {} \;
@@ -34,5 +31,4 @@ clean:	libraries-clean
 
 install: libraries-install
 
-#include tools.mk # Local tools
 include libraries.mk # Libraries
