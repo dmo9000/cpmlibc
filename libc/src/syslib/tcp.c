@@ -15,7 +15,7 @@ uint8_t net_dmabuffer[128];
 #define NET_TCP_RECV        4
 #define NET_TCP_ABORT       5
 
-int tcp_connect(const char *a, uint16_t p)
+int tcp_connect(char *a, uint16_t p)
 {
     char *p1 = NULL, *p2= NULL;
     int i = 0;
@@ -23,7 +23,7 @@ int tcp_connect(const char *a, uint16_t p)
     uint8_t o[4];
     int z = 0;
 
-    p1 = a;
+    p1 = (const char *) a;
     p2 = NULL;
     z = strlen(a);
     for (i = 0; i < 4; i++) {
