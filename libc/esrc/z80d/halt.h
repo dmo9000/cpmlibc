@@ -1,1 +1,0 @@
-int halt(char *payload);
