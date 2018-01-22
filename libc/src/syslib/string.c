@@ -60,9 +60,9 @@ strsep(char **stringp, const char *delim)
 	/* NOTREACHED */
 }
 
-char *strrchr(const char *s, int c)
+char *strrchr(char *s, int c)
 {
-	char *ptr = (char *) s;
+	char *ptr = (const char *) s;
 	char *retptr = NULL;
 
 	while (ptr[0] != '\0') {

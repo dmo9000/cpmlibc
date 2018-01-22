@@ -30,7 +30,7 @@ size_t heap_init()
 
 //    printf("Clearing heap ...\n");
     ptr1 = (char  *) &__sdcc_heap_end;
-    ptr2 = *stack_pointer;
+    ptr2 = (char *) *stack_pointer;
     n = (size_t) (ptr2 - STACK_RESERVED) - ptr1;
 //    printf("start = 0x%04x\n", ptr1);
 //    printf("length = 0x%04x (%u)\n", n, n);

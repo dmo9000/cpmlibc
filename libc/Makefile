@@ -1,4 +1,5 @@
-MAXALLOCS=500000
+MAXALLOCS=200000
+#MAXALLOCS=1
 # cat /proc/cpuinfo | grep "^processor" | wc -l
 #MAXALLOCS=100000
 

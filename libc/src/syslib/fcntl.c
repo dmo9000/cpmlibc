@@ -139,7 +139,7 @@ int stat(char *pathname, struct stat *buf)
     uint8_t module_number = 0; /* 512K block index */
     uint16_t num_records = 0; /* number of 128 byte blocks */
     int i = 0;
-    bool completed = false;
+    bool completed;
 
     if (!_fds_init_done) {
         _fds_init();
@@ -160,6 +160,8 @@ int stat(char *pathname, struct stat *buf)
         return -1;
     }
     strncpy(_filetype, ptr+1, ( length < 4 ? length : 3));
+
+    completed = false;
 
     while (completed != true) {
         fcb_ptr = (FCB*) &statfcb;
