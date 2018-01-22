@@ -10,18 +10,17 @@ MIRRORS=/media/sf_OSZ/systems/199c4422-9790-11e7-be3e-0800278237b3 /media/sf_OSZ
 IMGDIRS := $(shell ls -1  /media/sf_OSZ/systems/ 2>/dev/null )
 THISBUILDID := $(shell cat build-id )
 
-#all: 	bump-build tools libraries
-all: 	bump-build libraries
+all: 	build-id.h bump-build libraries
 
-
-bump-build: build-id build-id.h
+bump-build-number: build-id
 	./build-id.sh	
 	@echo "+++ build-id for this build is ${THISBUILDID}"
+
+bump-build: build-id.h
 
 clean-arf:
 	find . -name "*.arf" -print -exec rm -f {} \;
 
-#clean:	tools-clean libraries-clean
 clean:	libraries-clean
 
 	rm -f $(BIN_DIR)/*
