@@ -31,9 +31,6 @@ $(LIBC_DIR)/llgrx.rel: src/syslib/llgrx.s
 $(LIBC_DIR)/llnet.rel: src/syslib/llnet.s
 	$(CAS) $(CAS_FLAGS) $(LIBC_DIR)/llnet.rel src/syslib/llnet.s
 
-#libraries: $(OBJS)
-#	sdcc-sdar -rc $(LIBC_DIR)/libc.a `find libc -name "*.rel" ! -name "cpm0.rel" | sort`
-
 libraries-install: $(LIBC_DIR)/cpm0.rel $(LIBC_DIR)/libc.a
 	sudo rm -rf /usr/share/sdcc/lib/z80cpm
 	sudo rm -rf /usr/share/sdcc/lib/z80cpm
@@ -48,66 +45,11 @@ libraries-clean:
 $(LIBC_DIR)/%.rel: $(SYSLIB_SRC_DIR)/%.c
 	$(CCC) $(CCC_FLAGS) -o $@ -c $<
 
-#$(LIBC_DIR)/heap.rel: $(SYSLIB_SRC_DIR)/heap.c
-#	$(CCC) $(CCC_FLAGS) -o $(LIBC_DIR) $(SYSLIB_SRC_DIR)/heap.c
-
-#$(LIBC_DIR)/grx.rel: $(SYSLIB_SRC_DIR)/grx.c
-#	$(CCC) $(CCC_FLAGS) -o $(LIBC_DIR) $(SYSLIB_SRC_DIR)/grx.c
-
-#$(LIBC_DIR)/tcp.rel: $(SYSLIB_SRC_DIR)/tcp.c
-#	$(CCC) $(CCC_FLAGS) -o $(LIBC_DIR) $(SYSLIB_SRC_DIR)/tcp.c
-
-#$(LIBC_DIR)/ctype.rel: $(SYSLIB_SRC_DIR)/ctype.c
-#	$(CCC) $(CCC_FLAGS) -o $(LIBC_DIR) $(SYSLIB_SRC_DIR)/ctype.c
-
-#$(LIBC_DIR)/string.rel: $(SYSLIB_SRC_DIR)/string.c
-#	$(CCC) $(CCC_FLAGS) -o $(LIBC_DIR) $(SYSLIB_SRC_DIR)/string.c
-
-#$(LIBC_DIR)/errno.rel: $(SYSLIB_SRC_DIR)/errno.c
-#	$(CCC) $(CCC_FLAGS) -o $(LIBC_DIR) $(SYSLIB_SRC_DIR)/errno.c
-
-#$(LIBC_DIR)/fcntl.rel: $(SYSLIB_SRC_DIR)/fcntl.c
-#	$(CCC) $(CCC_FLAGS) -o $(LIBC_DIR) $(SYSLIB_SRC_DIR)/fcntl.c
-
-#$(LIBC_DIR)/cprintf.rel: $(SYSLIB_SRC_DIR)/cprintf.c
-#	$(CCC) $(CCC_FLAGS) -o $(LIBC_DIR) $(SYSLIB_SRC_DIR)/cprintf.c
-
-#$(LIBC_DIR)/cstdio.rel: $(SYSLIB_SRC_DIR)/cstdio.c
-#	$(CCC) $(CCC_FLAGS) -o $(LIBC_DIR) $(SYSLIB_SRC_DIR)/cstdio.c
-
-#$(LIBC_DIR)/malloc.rel: $(SYSLIB_SRC_DIR)/malloc.c
-#	$(CCC) $(CCC_FLAGS) -o $(LIBC_DIR) $(SYSLIB_SRC_DIR)/malloc.c
-
-#$(LIBC_DIR)/random.rel: $(SYSLIB_SRC_DIR)/random.c
-#	$(CCC) $(CCC_FLAGS) -o $(LIBC_DIR) $(SYSLIB_SRC_DIR)/random.c
-
-#$(LIBC_DIR)/vprintf.rel: $(SYSLIB_SRC_DIR)/vprintf.c
-#	$(CCC) $(CCC_FLAGS) -o $(LIBC_DIR) $(SYSLIB_SRC_DIR)/vprintf.c
-
-#$(LIBC_DIR)/strtol.rel: $(SYSLIB_SRC_DIR)/strtol.c
-#	$(CCC) $(CCC_FLAGS) -o $(LIBC_DIR) $(SYSLIB_SRC_DIR)/strtol.c
-
-#$(LIBC_DIR)/getopt.rel: $(SYSLIB_SRC_DIR)/getopt.c
-#	$(CCC) $(CCC_FLAGS) -o $(LIBC_DIR) $(SYSLIB_SRC_DIR)/getopt.c
-
-#$(LIBC_DIR)/cpm_sysfunc.rel: $(SYSLIB_SRC_DIR)/cpm_sysfunc.c
-#	$(CCC) $(CCC_FLAGS) -o $(LIBC_DIR) $(SYSLIB_SRC_DIR)/cpm_sysfunc.c
-
-#$(LIBC_DIR)/ansi_term.rel: $(SYSLIB_SRC_DIR)/ansi_term.c
-#	$(CCC) $(CCC_FLAGS) -o $(LIBC_DIR) $(SYSLIB_SRC_DIR)/ansi_term.c
-
-#$(LIBC_DIR)/time.rel: $(SYSLIB_SRC_DIR)/time.c
-#	$(CCC) $(CCC_FLAGS) -o $(LIBC_DIR) $(SYSLIB_SRC_DIR)/time.c
-
 $(LIBC_DIR)/cpmbdos.rel:	$(SRC_DIR)/cpm/cpmbdos.c
 	$(CCC) $(CCC_FLAGS) -o $(LIBC_DIR)/cpmbdos.rel $(SRC_DIR)/cpm/cpmbdos.c
 
-#$(LIBC_DIR)/hw_modprn02.rel: $(HWLIB_SRC_DIR)/modprn02/hw_modprn02.c
-#	$(CCC) $(CCC_FLAGS) -o $(LIBC_DIR) $(HWLIB_SRC_DIR)/modprn02/hw_modprn02.c
-
 $(LIBC_DIR)/hw_common.rel: $(HWLIB_SRC_DIR)/common/hw_common.c
 	$(CCC) $(CCC_FLAGS) -o $(LIBC_DIR)/hw_common.rel $(HWLIB_SRC_DIR)/common/hw_common.c
-
 
 # Build CP/M-80 Command File Structure files
 $(LIBC_DIR)/cpm0.rel: $(CPM_SRC_DIR)/cpm0.s
