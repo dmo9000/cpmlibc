@@ -23,3 +23,8 @@ libc/*.lst
 libc/*.rel
 libc/*.sym
 libc/*.arf
+
+src/cpm/*.lst
+src/cpm/*.rel
+src/cpm/*.sym
+
