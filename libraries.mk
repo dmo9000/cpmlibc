@@ -7,10 +7,11 @@ CPM_OBJS   = $(LIBC_DIR)/cpmbdos.rel
 HW_OBJS	 	 = $(LIBC_DIR)/hw_common.rel
 LLASM_OBJS = $(LIBC_DIR)/lldetect.rel $(LIBC_DIR)/llcommand.rel $(LIBC_DIR)/llgrx.rel $(LIBC_DIR)/llnet.rel
 LLEXT_OBJS = $(LIBC_DIR)/tcp.rel $(LIBC_DIR)/grx.rel
-OBJS =		 $(LIBC_DIR)/vprintf.rel $(LIBC_DIR)/cprintf.rel $(LIBC_DIR)/cstdio.rel $(LIBC_DIR)/ansi_term.rel $(LIBC_DIR)/cpm_sysfunc.rel 			\
+OBJS =		 $(LIBC_DIR)/vprintf.rel $(LIBC_DIR)/cprintf.rel $(LIBC_DIR)/cstdio.rel $(LIBC_DIR)/ansi_term.rel $(LIBC_DIR)/cpm_sysfunc.rel 				\
              $(LIBC_DIR)/strtol.rel $(LIBC_DIR)/fcntl.rel $(LIBC_DIR)/errno.rel $(LIBC_DIR)/string.rel $(LIBC_DIR)/ctype.rel $(LIBC_DIR)/random.rel		\
              $(LIBC_DIR)/getopt.rel $(LIBC_DIR)/heap.rel $(LIBC_DIR)/malloc.rel $(LIBC_DIR)/time.rel $(LIBC_DIR)/llclock.rel $(LIBC_DIR)/fread.rel		\
-			 $(LIBC_DIR)/fwrite.rel $(LIBC_DIR)/feof.rel $(LIBC_DIR)/ftell.rel $(LIBC_DIR)/fopen.rel $(LIBC_DIR)/fseek.rel $(LIBC_DIR)/fclose.rel
+			 $(LIBC_DIR)/fwrite.rel $(LIBC_DIR)/feof.rel $(LIBC_DIR)/ftell.rel $(LIBC_DIR)/fopen.rel $(LIBC_DIR)/fseek.rel $(LIBC_DIR)/fclose.rel		\
+			 $(LIBC_DIR)/stat.c $(LIBC_DIR)/open.c $(LIBC_DIR)/close.c $(LIBC_DIR)/write.c $(LIBC_DIR)/read.c $(LIBC_DIR)/lseek.c
 
 libraries: libc/libc.a libc/libcpmextra.a
 
