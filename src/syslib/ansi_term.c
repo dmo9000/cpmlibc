@@ -207,11 +207,11 @@ term_reset ()
 
       switch (TERM) {
         case TERM_AMSTRAD3:
-						printf("+++ Not supported.\n");
+						puts("+++ Not supported.\n");
 						exit(1);
 						break;
         case TERM_VT52:
-						printf("+++ Not supported.\n");
+						puts("+++ Not supported.\n");
 						exit(1);
             break;
         case TERM_ANSI:
@@ -221,7 +221,7 @@ term_reset ()
             printf ("%c[37m%c[40m%cc", CHAR_ESCAPE, CHAR_ESCAPE, CHAR_ESCAPE);
             break;
         default:
-						printf("+++ Not supported.\n");
+						puts("+++ Not supported.\n");
 						exit(1);
             break;
         };
@@ -235,7 +235,7 @@ clear_screen ()
 
    switch (TERM) {
         case TERM_AMSTRAD3:
-						printf("+++ Not supported.\n");
+						puts("+++ Not supported.\n");
 						exit(1);
         case TERM_VT52:
             printf ("%cH%cJ", CHAR_ESCAPE, CHAR_ESCAPE);
@@ -249,7 +249,7 @@ clear_screen ()
             printf ("%c[1;1H", CHAR_ESCAPE);
             break;
         default:
-						printf("+++ Not supported.\n");
+						puts("+++ Not supported.\n");
 						exit(1);
             break;
         };
@@ -263,10 +263,10 @@ set_cursor(int x, int y)
    //printf("setcursor(%d, %d)\n", x, y);
    switch (TERM) {
         case TERM_AMSTRAD3:
-						printf("+++ Not supported.\n");
+						puts("+++ Not supported.\n");
 						exit(1);
         case TERM_VT52:
-						printf("+++ Not supported.\n");
+						puts("+++ Not supported.\n");
 						exit(1);
             break;
         case TERM_ANSI:
@@ -277,7 +277,7 @@ set_cursor(int x, int y)
             //printf("ANSI_setcursor(%d,%d)", x, y); 
             break;
         default:
-						printf("+++ Not supported.\n");
+						puts("+++ Not supported.\n");
 						exit(1);
             break;
         };
