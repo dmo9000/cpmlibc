@@ -24,29 +24,12 @@
 
 /* errno should be set appropriately */
 static uint8_t dma_buffer[SSIZE_MAX];
-#define FILES_BASE				 	0x03
-#define FILES_MAX  					8
-#define MODULE_SIZE 				524288
-#define EXTENTS_PER_MODULE	32
-
-/*
-typedef struct {
-    int id;
-    int oflags;
-    uint32_t offset;
-    FCB fcb;
-} _cfd;
-*/
-
 FILE filehandles[FILES_MAX];
 _cfd CFD[FILES_MAX];
 bool _fds_init_done = false;
 int  _find_free_fd();
 int  _find_free_filehandle();
 void _fds_init();
-
-#define KILOBYTE    1024
-#define EXTENT_SIZE (16 * KILOBYTE)
 
 void _fds_init()
 {
