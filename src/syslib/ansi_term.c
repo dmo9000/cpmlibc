@@ -21,6 +21,7 @@ tty_type TERM;
 
 #define ANSI_TREQ		"[c" // What are you
 
+/*
 void term_sendCommand(char *cmd);
 
 void term_ANSIMode(void) {
@@ -194,6 +195,7 @@ void term_sendCommand(char *cmd) {
 	}
 }
 
+*/
 
 void set_term(tty_type t)
 {
