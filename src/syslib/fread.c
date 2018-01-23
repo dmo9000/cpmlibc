@@ -37,9 +37,8 @@ typedef struct {
     FCB fcb;
 } _cfd;
 
-FILE filehandles[FILES_MAX];
-
-static _cfd CFD[FILES_MAX];
+extern FILE filehandles[FILES_MAX];
+extern _cfd CFD[FILES_MAX];
 bool _fds_init_done = false;
 int  _find_free_fd();
 int  _find_free_filehandle();
