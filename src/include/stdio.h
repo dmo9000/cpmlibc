@@ -1,9 +1,7 @@
 #ifndef __STDIO_H__
 #define __STDIO_H__
-//#include <syslib/cpm_sysfunc.h>
 #include <stddef.h>
 #include <stdbool.h>
-
 
 #if z80
 #define BUFSIZ    512
@@ -13,11 +11,11 @@
 #define _NFILE    20
 #endif /*  z80 */
 
-#define EOF 0x1A	
+#define EOF         0x1A	
 #define SEEK_SET    0
 #define SEEK_CUR    1
 #define SEEK_END    2
-#define LONG_MAX 		2147483647
+#define LONG_MAX    2147483647
 
 #define uchar unsigned char
 
