@@ -5,16 +5,16 @@ LIBC_DIR = libc
 CRT_OBJS   = $(LIBC_DIR)/cpm0.rel
 CPM_OBJS   = $(LIBC_DIR)/cpmbdos.rel
 HW_OBJS	 	 = $(LIBC_DIR)/hw_common.rel
-LLASM_OBJS = $(LIBC_DIR)/lldetect.rel $(LIBC_DIR)/llclock.rel $(LIBC_DIR)/llcommand.rel $(LIBC_DIR)/llgrx.rel $(LIBC_DIR)/llnet.rel
+LLASM_OBJS = $(LIBC_DIR)/lldetect.rel $(LIBC_DIR)/llcommand.rel $(LIBC_DIR)/llgrx.rel $(LIBC_DIR)/llnet.rel
 LLEXT_OBJS = $(LIBC_DIR)/tcp.rel $(LIBC_DIR)/grx.rel
 OBJS =		   $(LIBC_DIR)/vprintf.rel $(LIBC_DIR)/cprintf.rel $(LIBC_DIR)/cstdio.rel $(LIBC_DIR)/ansi_term.rel $(LIBC_DIR)/cpm_sysfunc.rel 						\
              $(LIBC_DIR)/strtol.rel $(LIBC_DIR)/fcntl.rel $(LIBC_DIR)/errno.rel $(LIBC_DIR)/string.rel $(LIBC_DIR)/ctype.rel $(LIBC_DIR)/random.rel		\
-             $(LIBC_DIR)/getopt.rel $(LIBC_DIR)/heap.rel $(LIBC_DIR)/malloc.rel $(LIBC_DIR)/time.rel 
+             $(LIBC_DIR)/getopt.rel $(LIBC_DIR)/heap.rel $(LIBC_DIR)/malloc.rel $(LIBC_DIR)/time.rel $(LIBC_DIR)/llclock.rel 
 
 libraries: libc/libc.a libc/libcpmextra.a
 
-libc/libc.a: $(LLASM_OBJS) $(HW_OBJS) $(CPM_OBJS) $(OBJS)
-	sdcc-sdar -rc $(LIBC_DIR)/libc.a $(LLASM_OBJS) $(HW_OBJS) $(CPM_OBJS) $(OBJS)
+libc/libc.a: $(HW_OBJS) $(CPM_OBJS) $(OBJS)
+	sdcc-sdar -rc $(LIBC_DIR)/libc.a $(HW_OBJS) $(CPM_OBJS) $(OBJS)
 
 libc/libcpmextra.a: $(LLASM_OBJS) $(LLEXT_OBJS) 
 	sdcc-sdar -rc $(LIBC_DIR)/libcpmextra.a $(LLASM_OBJS) $(LLEXT_OBJS)  
