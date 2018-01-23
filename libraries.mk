@@ -11,7 +11,7 @@ OBJS =		 $(LIBC_DIR)/vprintf.rel $(LIBC_DIR)/cprintf.rel $(LIBC_DIR)/cstdio.rel 
              $(LIBC_DIR)/strtol.rel $(LIBC_DIR)/fcntl.rel $(LIBC_DIR)/errno.rel $(LIBC_DIR)/string.rel $(LIBC_DIR)/ctype.rel $(LIBC_DIR)/random.rel		\
              $(LIBC_DIR)/getopt.rel $(LIBC_DIR)/heap.rel $(LIBC_DIR)/malloc.rel $(LIBC_DIR)/time.rel $(LIBC_DIR)/llclock.rel $(LIBC_DIR)/fread.rel		\
 			 $(LIBC_DIR)/fwrite.rel $(LIBC_DIR)/feof.rel $(LIBC_DIR)/ftell.rel $(LIBC_DIR)/fopen.rel $(LIBC_DIR)/fseek.rel $(LIBC_DIR)/fclose.rel		\
-			 $(LIBC_DIR)/stat.c $(LIBC_DIR)/open.c $(LIBC_DIR)/close.c $(LIBC_DIR)/write.c $(LIBC_DIR)/read.c $(LIBC_DIR)/lseek.c
+			 $(LIBC_DIR)/stat.rel $(LIBC_DIR)/open.rel $(LIBC_DIR)/close.rel $(LIBC_DIR)/write.rel $(LIBC_DIR)/read.rel $(LIBC_DIR)/lseek.rel
 
 libraries: libc/libc.a libc/libcpmextra.a
 
