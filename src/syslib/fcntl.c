@@ -29,14 +29,14 @@ static uint8_t dma_buffer[SSIZE_MAX];
 #define MODULE_SIZE 				524288
 #define EXTENTS_PER_MODULE	32
 
+/*
 typedef struct {
     int id;
     int oflags;
-//    ssize_t offset;
     uint32_t offset;
-//    int32_t offset;
     FCB fcb;
 } _cfd;
+*/
 
 FILE filehandles[FILES_MAX];
 _cfd CFD[FILES_MAX];
@@ -635,150 +635,4 @@ off_t lseek(int fd, off_t offset, int whence)
 }
 
 
-FILE *fopen(const char *path, const char *mode)
-{
-    static struct stat statbuf;
-    int fd = -1;
-    int fh = -1;
-    int oflags = 0;
-    FILE *myfhptr = NULL;
-    ssize_t initial_size = 0;
-    if (!_fds_init_done) {
-        _fds_init();
-    }
 
-    if (strncmp(mode, "r", 1) == 0) {
-        oflags = O_RDONLY;
-    }
-
-    if (strncmp(mode, "w", 1) == 0) {
-        oflags = O_WRONLY | O_TRUNC;
-    }
-
-    if (strncmp(mode, "r+", 2) == 0) {
-        oflags = O_RDWR;
-    }
-
-    if (strncmp(mode, "w+", 2) == 0) {
-        oflags = O_RDWR | O_TRUNC;
-    }
-
-
-    /*
-    if (stat ((const char *) path, &statbuf) == 0) {
-    // save the size of the file if it is available to th
-    		// stream->_limit field
-    initial_size = statbuf.st_size;
-    } else {
-    initial_size = 0;
-    }
-    */
-
-    errno = 0;
-    fd = open(path, oflags);
-
-    if (fd < 0) {
-        /* pass through errno */
-        return NULL;
-    }
-    errno = 0;
-    /* get free filehandle */
-    fh = _find_free_filehandle();
-    if (fh == -1) {
-        close(fd);
-        errno = ENFILE;
-        return NULL;
-    }
-
-
-
-    errno = 0;
-    filehandles[fh]._file = fd;
-    filehandles[fh]._eof = false;
-    filehandles[fh]._limit = initial_size;
-    memset(&filehandles[fh]._flags, 0, 4);
-    strncpy((const char *) &filehandles[fh]._flags, (const char *) mode, 3);
-    myfhptr = &filehandles[fh];
-    return (FILE*) myfhptr;
-
-}
-
-int fclose(FILE *stream)
-{
-
-    if (! stream || stream->_file == -1) {
-        errno = EBADF;
-        return -1;
-    }
-    stream->_file = -1;
-    errno = 0;
-    return 0;
-}
-
-int fseek(FILE *stream, long offset, int whence)
-{
-    if (! stream || stream->_file == -1) {
-        errno = EBADF;
-        return -1;
-    }
-
-    //printf("\r\n+fseek(FILE=0x%04x[%d], %ld, %d)\n", stream, stream->_file, offset, whence);
-
-    /* success */
-
-    if (lseek(stream->_file, offset, whence) == -1) {
-        /* pass through errno from lseek() */
-        return -1;
-    }
-
-    errno = 0;
-    return 0;
-
-}
-
-size_t fwrite(void *ptr, size_t size, size_t nmemb, FILE *stream)
-{
-    int i = 0;
-    ssize_t wr = 0;
-    char *myptr = (char *) ptr;
-    if (! stream || stream->_file == -1) {
-        errno = EBADF;
-        return -1;
-    }
-
-    for (i = 0; i < nmemb; i++) {
-        wr = write(stream->_file, myptr, size);
-        if (wr == 0) {
-            /* END OF FILE REACHED */
-            stream->_eof = true;
-        }
-
-
-        if (wr == -1) {
-            /* pass through errno from write() */
-            return 0;
-        }
-    }
-
-    return i;
-}
-
-int feof(FILE *stream)
-{
-    errno = 0;
-    if (! stream || stream->_file == -1) {
-        errno = EBADF;
-        return -1;
-    }
-    if (stream->_eof) {
-        return 1;
-    }
-    return 0;
-}
-
-long ftell(FILE *stream)
-{
-
-    return CFD[stream->_file].offset;
-
-}

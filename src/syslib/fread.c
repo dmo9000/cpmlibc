@@ -8,6 +8,7 @@
 #include <string.h>
 #include <errno.h>
 #include <sys/stat.h>
+#include <fcntl_private.h>
 #include "cpmbdos.h"
 #include "cpm_sysfunc.h"
 #include "ansi_term.h"
@@ -22,30 +23,8 @@
 			S2 = extent high byte, ie (file pointer / 524288). The CP/M Plus source code refers to this use of the S2 byte as 'module number'.
 */
 
-/* errno should be set appropriately */
-#define FILES_BASE				 	0x03
-#define FILES_MAX  					8
-#define MODULE_SIZE 				524288
-#define EXTENTS_PER_MODULE	32
 
-typedef struct {
-    int id;
-    int oflags;
-//    ssize_t offset;
-    uint32_t offset;
-//    int32_t offset;
-    FCB fcb;
-} _cfd;
 
-extern FILE filehandles[FILES_MAX];
-extern _cfd CFD[FILES_MAX];
-bool _fds_init_done = false;
-int  _find_free_fd();
-int  _find_free_filehandle();
-void _fds_init();
-
-#define KILOBYTE    1024
-#define EXTENT_SIZE (16 * KILOBYTE)
 
 size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream)
 {
