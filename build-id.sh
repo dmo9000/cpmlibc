@@ -1,5 +1,4 @@
 #!/bin/sh
-
 SEQ=0000
 
 THIS_BUILD_ID=`printf "%s%04d" \`date "+%Y%m%d"\` ${SEQ}`
