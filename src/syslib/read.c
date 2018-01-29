@@ -25,7 +25,75 @@
 
 /* errno should be set appropriately */
 
+
 ssize_t read(int fd, void *buf, size_t count)
+{
+   FCB *fcb_ptr = NULL;
+    uint16_t ret_ba, ret_hl;
+    int rval = 0;
+    int cpm_err = 0;
+    int rd = 0;
+    int start_offset = 0;
+    int limit = SSIZE_MAX;
+    uint16_t required_record = 0;
+		int i = 0;
+
+    if (!_fds_init_done) {
+        _fds_init();
+    }
+    if ((fd < 0 || fd >= FILES_MAX) || CFD[fd].id == -1) {
+        errno = EBADF;
+        return -1;
+    }
+
+    fcb_ptr = (FCB*) &CFD[fd].fcb;
+		required_record = (CFD[fd].offset / 128);
+    fcb_ptr->rrec = required_record;
+    fcb_ptr->rrecob = required_record; /* only support upto 8MB right now */
+
+		/* TODO: check if the file is already open - may need extra flag in the CFD block for this */
+    rval = cpm_performFileOp(fop_open, fcb_ptr);
+    cpm_setDMAAddr((uint16_t)dma_buffer);
+    rval = cpm_performFileOp(fop_readRandRecord, fcb_ptr);
+
+    ret_ba = get_ret_ba();
+    ret_hl = get_ret_hl();
+
+//#ifdef DEBUG_LIBCIO_READ
+    printf("%s", TTY_FOREGROUND_RED);
+    printf(" read ret.val=%02X, ret_ba=0x%04x ret_hl=0x%04x\n", rval, ret_ba, ret_hl);
+    printf("\ts1s2   ->\t%04X\n",fcb_ptr->resv);
+    printf("\tex     ->\t%02X\n",fcb_ptr->ex);
+    printf("\trc     ->\t%02X\n",fcb_ptr->rc);
+    printf("\tsreq   ->\t%02X\n",fcb_ptr->seqreq);
+    printf("\trrec   ->\t%04X\n",fcb_ptr->rrec);
+    printf("\trrecob ->\t%02X\n",fcb_ptr->rrecob);
+    printf("%s", TTY_FOREGROUND_WHITE);
+//#endif /* DEBUG_LIBCIO_READ */
+
+    if (rval != 0) {
+        cpm_err = (ret_ba & 0xff00) >> 8;
+        if (fcb_ptr->rrec > 0x00ff) {
+            printf("\n# READ_FAIL: ret.val=%02X, ret_ba=0x%04x ret_hl=0x%04x, CPM_ERR=%d\n", rval, ret_ba, ret_hl, cpm_err);
+            printf("#\tsreq ->\t%02X\n",fcb_ptr->seqreq);
+            printf("#\trrec ->\t%04X\n",fcb_ptr->rrec);
+            printf("#\trreo ->\t%02X\n\n",fcb_ptr->rrecob);
+						exit(1);
+        }
+		}
+
+	for (i = 0; i < 128; i++) {
+		printf("%02x ", dma_buffer[i]); 
+		}
+
+	printf("\n");
+
+	printf("RAND READ OK\n");
+	exit(0);
+}
+
+
+ssize_t seq_read(int fd, void *buf, size_t count)
 {
     FCB *fcb_ptr = NULL;
     uint16_t ret_ba, ret_hl;
