@@ -18,7 +18,7 @@
 #define SEEK_END    2
 
 #define FILES_BASE                  0x03
-#define FILES_MAX                   8
+#define FILES_MAX                   4 
 #define MODULE_SIZE                 524288
 #define EXTENTS_PER_MODULE          32
 #define KILOBYTE                    1024

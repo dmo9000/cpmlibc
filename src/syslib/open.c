@@ -80,6 +80,7 @@ int open(const char *pathname, int flags)
 
         if (rval != 0xFF) {
             //printf("File found, reading the FCB!\n");
+            //fcb_ptr->resv = 0x8080; 
             errno = 0;
             goto return_valid_fd;
         } else {
@@ -115,9 +116,9 @@ return_valid_fd:
     CFD[fd].id = fd;
     CFD[fd].oflags = flags;
     CFD[fd].offset = 0x0000;
-    fcb_ptr->seqreq = 0x00;
-    fcb_ptr->rrec = 0x0000;
-    fcb_ptr->rrecob = 0x00;
+//    fcb_ptr->seqreq = 0x00;
+//    fcb_ptr->rrec = 0x0000;
+//    fcb_ptr->rrecob = 0x00;
     errno = 0;
     return fd;
 

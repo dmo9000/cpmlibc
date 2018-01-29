@@ -12,7 +12,7 @@ typedef struct {
 	char filename[8]; // File name (when opening a '?' means 'any character')
 	char filetype[3]; // File type
 	uint8_t ex; // Extent
-	uint16_t resv; // Reserved for CP/M
+   	uint16_t resv; // Reserved for CP/M
 	uint8_t rc; // Records used in extent
 	uint8_t alb[16]; // Allocation blocks used
 	uint8_t seqreq; // Sequential records to read/write
