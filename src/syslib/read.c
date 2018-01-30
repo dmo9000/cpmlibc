@@ -89,15 +89,21 @@ ssize_t seq_read(int fd, void *buf, size_t count)
 
     fcb_ptr->seqreq = (required_block - 1) % 80;
 
+		memset(&dma_buffer, 0xFF, 128);
     cpm_setDMAAddr((uint16_t)dma_buffer);
+
+
+/*
     rval = cpm_performFileOp(fop_readSeqRecord, fcb_ptr);
     ret_ba = get_ret_ba();
     ret_hl = get_ret_hl();
+    rval2 = cpm_performFileOp(fop_updRandRecPtr, fcb_ptr);
+*/
 
 #define DEBUG_LIBCIO_READ
 #ifdef DEBUG_LIBCIO_READ
     printf("%s", TTY_FOREGROUND_RED);
-    printf(" read ret.val=%02X, ret_ba=0x%04x ret_hl=0x%04x\n", rval, ret_ba, ret_hl);
+//    printf(" read ret.val=%02X, ret_ba=0x%04x ret_hl=0x%04x\n", rval, ret_ba, ret_hl);
     printf("\tmodule ->\t  %02X\n", required_module);
     printf("\textent ->\t  %02X\n", required_extent);
     printf("\tblock  ->\t  %02X\n", required_block);
@@ -106,9 +112,25 @@ ssize_t seq_read(int fd, void *buf, size_t count)
     printf("\tex     ->\t  %02X\n", fcb_ptr->ex);
     printf("\trc     ->\t  %02X\n", fcb_ptr->rc);
     printf("\tsreq   ->\t  %02X\n", fcb_ptr->seqreq);
-    printf("\trrec   ->\t%04X\n", fcb_ptr->rrec);
-    printf("\trrecob ->\t  %02X\n", fcb_ptr->rrecob);
+//    printf("\trrec   ->\t%04X\n", fcb_ptr->rrec);
+//    printf("\trrecob ->\t  %02X\n", fcb_ptr->rrecob);
     printf("%s", TTY_FOREGROUND_WHITE);
+#endif /* DEBUG_LIBCIO_READ */
+
+    rval = cpm_performFileOp(fop_readSeqRecord, fcb_ptr);
+    ret_ba = get_ret_ba();
+    ret_hl = get_ret_hl();
+
+		if (rval == 0) {
+  	  rval2 = cpm_performFileOp(fop_updRandRecPtr, fcb_ptr);
+			}
+
+#ifdef DEBUG_LIBCIO_READ
+	printf("%s", TTY_FOREGROUND_RED);
+  printf(" read ret.val=%02X, ret_ba=0x%04x ret_hl=0x%04x\n", rval, ret_ba, ret_hl);
+  printf("\trrec   ->\t%04X\n", fcb_ptr->rrec);
+  printf("\trrecob ->\t  %02X\n", fcb_ptr->rrecob);
+	printf("%s", TTY_FOREGROUND_WHITE);	
 #endif /* DEBUG_LIBCIO_READ */
 
     if (rval != 0) {
@@ -140,7 +162,9 @@ ssize_t seq_read(int fd, void *buf, size_t count)
 
     /* update RR record */
 
-    rval2 = cpm_performFileOp(fop_updRandRecPtr, fcb_ptr);
+
+
+    //rval2 = cpm_performFileOp(fop_updRandRecPtr, fcb_ptr);
 
     /* if we requested more bytes than are available, just copy those and return the value */
     if (count < limit) {
