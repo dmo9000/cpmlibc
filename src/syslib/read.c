@@ -51,7 +51,6 @@ ssize_t seq_read(int fd, void *buf, size_t count)
     if (!_fds_init_done) {
         _fds_init();
     }
-    //printf("read(%d, 0x%04x, %u)\n", fd, buf, count);
 
     if ((fd < 0 || fd >= FILES_MAX) || CFD[fd].id == -1) {
         errno = EBADF;
@@ -73,24 +72,18 @@ ssize_t seq_read(int fd, void *buf, size_t count)
     required_module = (CFD[fd].offset / 524288);
     required_resv = (uint16_t) ((uint8_t) ((0x80 + required_module) & 0x00ff) << 8);
     required_extent = ((CFD[fd].offset / 16384) % 0x20);
-//    required_extent = (((CFD[fd].offset % 524288) / 16384) % 0x20);
-//    required_block = (CFD[fd].offset / 128);
-    required_block = ((CFD[fd].offset % 524288) / 128);
+    required_block = (CFD[fd].offset / 128);
     required_block -= (required_extent * 0x80);
-//    required_block += 1;
+    required_block += 1;
 
     if (fcb_ptr->ex != required_extent) {
         fcb_ptr->resv = required_resv;
         fcb_ptr->ex = required_extent;
-        flag_reopen = true;
     }
 
     if (fcb_ptr->resv != required_resv) {
         fcb_ptr->resv = required_resv;
         fcb_ptr->ex = required_extent;
-        flag_reopen = true;
-        //printf("fcb_ptr->resv = 0x%04x\n", fcb_ptr->resv);
-        //exit(1);
     }
 
 
@@ -98,13 +91,8 @@ ssize_t seq_read(int fd, void *buf, size_t count)
         fcb_ptr->seqreq = required_block;
     }
 
-    if (flag_reopen) {
-        //rval = cpm_performFileOp(fop_open, fcb_ptr);
-    }
-
     cpm_setDMAAddr((uint16_t)dma_buffer);
     rval = cpm_performFileOp(fop_readSeqRecord, fcb_ptr);
-//    rval2 = cpm_performFileOp(fop_updRandRecPtr, fcb_ptr);
     ret_ba = get_ret_ba();
     ret_hl = get_ret_hl();
 
@@ -118,12 +106,12 @@ ssize_t seq_read(int fd, void *buf, size_t count)
     printf("\trc     ->\t  %02X\n", fcb_ptr->rc);
     if (fcb_ptr->rc != 0x80) {
         printf("\t(FINAL EXTENT IN FILE)\n");
-        } 
+    }
     printf("\tsreq   ->\t  %02X\n", fcb_ptr->seqreq);
     printf("\trrec   ->\t%04X\n", fcb_ptr->rrec);
     printf("\trrecob ->\t  %02X\n", fcb_ptr->rrecob);
     printf("%s", TTY_FOREGROUND_WHITE);
-    
+
 #endif /* DEBUG_LIBCIO_READ */
 
 
