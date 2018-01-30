@@ -47,6 +47,7 @@ ssize_t seq_read(int fd, void *buf, size_t count)
     uint16_t required_block = 0;
     uint16_t required_resv = 0;
     bool flag_reopen = false;
+		uint8_t i = 0, j = 0;
 
     if (!_fds_init_done) {
         _fds_init();
@@ -86,52 +87,50 @@ ssize_t seq_read(int fd, void *buf, size_t count)
         fcb_ptr->ex = required_extent;
     }
 
-
-    if (fcb_ptr->seqreq != required_block) {
-        fcb_ptr->seqreq = required_block;
-    }
+    fcb_ptr->seqreq = (required_block - 1) % 80;
 
     cpm_setDMAAddr((uint16_t)dma_buffer);
     rval = cpm_performFileOp(fop_readSeqRecord, fcb_ptr);
     ret_ba = get_ret_ba();
     ret_hl = get_ret_hl();
 
-//#define DEBUG_LIBCIO_READ
+#define DEBUG_LIBCIO_READ
 #ifdef DEBUG_LIBCIO_READ
     printf("%s", TTY_FOREGROUND_RED);
     printf(" read ret.val=%02X, ret_ba=0x%04x ret_hl=0x%04x\n", rval, ret_ba, ret_hl);
     printf("\tmodule ->\t  %02X\n", required_module);
+    printf("\textent ->\t  %02X\n", required_extent);
+    printf("\tblock  ->\t  %02X\n", required_block);
+		printf("\t--\n");
     printf("\ts1s2   ->\t%04X\n", fcb_ptr->resv);
     printf("\tex     ->\t  %02X\n", fcb_ptr->ex);
     printf("\trc     ->\t  %02X\n", fcb_ptr->rc);
-    if (fcb_ptr->rc != 0x80) {
-        printf("\t(FINAL EXTENT IN FILE)\n");
-    }
     printf("\tsreq   ->\t  %02X\n", fcb_ptr->seqreq);
     printf("\trrec   ->\t%04X\n", fcb_ptr->rrec);
     printf("\trrecob ->\t  %02X\n", fcb_ptr->rrecob);
     printf("%s", TTY_FOREGROUND_WHITE);
-
 #endif /* DEBUG_LIBCIO_READ */
-
 
     if (rval != 0) {
         cpm_err = (ret_ba & 0xff00) >> 8;
-        if (fcb_ptr->rrec > 0x00ff) {
-            printf("\n# READ_FAIL: ret.val=%02X, ret_ba=0x%04x ret_hl=0x%04x, CPM_ERR=%d\n", rval, ret_ba, ret_hl, cpm_err);
-            printf("#\tsreq ->\t%02X\n",fcb_ptr->seqreq);
-            printf("#\trrec ->\t%04X\n",fcb_ptr->rrec);
-            printf("#\trreo ->\t%02X\n\n",fcb_ptr->rrecob);
-        }
-
         switch(cpm_err) {
         case 0x01:
             /* end of file - return 0 to caller, clear errno */
+            printf("\n# EOF?: ret.val=%02X, ret_ba=0x%04x ret_hl=0x%04x, CPM_ERR=%d\n", rval, ret_ba, ret_hl, cpm_err);
             printf("/* read() hit EOF */\n");
-            exit(1);
+						for (i = 0; i < 8; i++) {
+							for (j = 0; j < 16; j++) {
+								printf("%02x ", dma_buffer[(i*16) + j]);
+								}
+								printf("\n");
+						}
             errno = 0;
             return 0;
             break;
+				default: 
+            printf("\n# READ_FAIL: ret.val=%02X, ret_ba=0x%04x ret_hl=0x%04x, CPM_ERR=%d\n", rval, ret_ba, ret_hl, cpm_err);
+						exit(1);
+						break;
         }
 
         /* something bad happened? */
