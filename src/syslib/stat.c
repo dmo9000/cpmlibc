@@ -27,7 +27,6 @@
 
 int stat(char *pathname, struct stat *buf)
 {
-
     static FCB statfcb;
     FCB *fcb_ptr = NULL;
     char _filename[9];
@@ -35,15 +34,16 @@ int stat(char *pathname, struct stat *buf)
     int length = 0;
     int rval = 0;
     char *ptr = NULL;
+    uint16_t ret_ba, ret_hl;
     uint8_t current_extent = 0; /* 16K block index */
     uint8_t module_number = 0; /* 512K block index */
     uint16_t num_records = 0; /* number of 128 byte blocks */
-    int i = 0;
-    bool completed;
 
     if (!_fds_init_done) {
         _fds_init();
     }
+
+    memset(&statfcb, 0, sizeof(FCB));
     memset(&_filename, 0, 9);
     memset(&_filetype, 0, 4);
     ptr = strchr(pathname, '.');
@@ -61,86 +61,54 @@ int stat(char *pathname, struct stat *buf)
     }
     strncpy(_filetype, ptr+1, ( length < 4 ? length : 3));
 
-    completed = false;
+    fcb_ptr = (FCB*) &statfcb;
 
-    while (completed != true) {
-        fcb_ptr = (FCB*) &statfcb;
-        cpm_setFCBname(_filename, _filetype, (FCB*) fcb_ptr);
-        fcb_ptr->ex = (current_extent % EXTENTS_PER_MODULE);
-        //fcb_ptr->ex = (current_extent);
-        module_number = (uint8_t) (current_extent / EXTENTS_PER_MODULE);
-        //fcb_ptr->resv = (0x80 +  module_number) << 8;
-        //fcb_ptr->resv =0x8080 +  module_number;
-        if (module_number) {
-            fcb_ptr->resv = 0x8081;
-        } else {
-            fcb_ptr->resv = 0x8080;
-        }
-        printf("offset = %lu\n", (uint32_t) ((num_records * 128)));
-        printf("extent = %u (%u)\n", (current_extent % EXTENTS_PER_MODULE), current_extent);
-        printf("module_number = %02x\n", module_number);
-        printf("fcp_ptr->resv = 0x%04x\n", fcb_ptr->resv);
-        rval = cpm_performFileOp(fop_open, fcb_ptr);
-        printf("stat(%d, %d)\n", rval, fcb_ptr->rc);
-        _print_fcb(fcb_ptr, false);
+    /* TODO: I believe this will only work with CPM2.2 or later, so we may need a better method 
+             that supports CPM1.x */
 
-        if (module_number > 1) {
-            printf("module number = %d (too large, limit 1M)\n", module_number);
-            goto done_counting;
-        }
+    cpm_setFCBname(_filename, _filetype, (FCB*) fcb_ptr);
 
-        switch(rval) {
-        case 0xFF:
-            errno = ENOENT;
-            return -1;
-            break;
-        case 0:
-        case 1:
-        case 2:
-        case 3:
-            /* examine the FCB in more detail */
-            //_print_fcb(fcb_ptr, false);
-            switch (fcb_ptr->rc) {
-            case 0x00:
-                /* no blocks in extent - we are finished */
-                printf("fcb_ptr->rc = %d, rval = %d\n", fcb_ptr->rc, rval);
-                printf("(empty extent?)\n");
-                goto done_counting;
+    rval = cpm_performFileOp(fop_calcFileSize, fcb_ptr);
+    ret_ba = get_ret_ba();
+    ret_hl = get_ret_hl();
+
+//    printf("+++ ret_ba = 0x%04x\n", ret_ba);
+
+    /* according to: https://www.seasip.info/Cpm/bdos.html 
+     *  
+     *  "A" register should contain 0xFF if not found, and 0x00 if file found 
+     *  It doesn't seem to work that way with Z80Pack, so we'll just do our best. 
+     *  This probably means we will return st_size=0 for a missing file, as well
+     *  as an existing, zero-byte file 
+     *
+     */
+
+    switch (ret_ba & 0x00ff) {
+            case 0xff:
+                /* file not found */
+                errno = ENOENT;            
+                return -1;
                 break;
-            default:
-                printf("fcb_ptr->rc = %d, rval = %d\n", fcb_ptr->rc, rval);
-                printf("%s", TTY_FOREGROUND_PURPLE);
-                num_records += fcb_ptr->rc;
-                printf("[multi-extent %u file:%u blocks (so far)]\n", current_extent, num_records);
-                current_extent++;
-                printf("%s", TTY_FOREGROUND_WHITE);
+            case 0x0:
+                /* file found, set statbuf fields, including st_size, and return with 0, errno = SUCCESS */
+                buf->st_mode = 0;
+                buf->st_mode |= S_IFREG;
+                buf->st_mode |= S_IREAD;
+                buf->st_mode |= S_IWRITE;
+                buf->st_atime = 0;
+                buf->st_mtime = 0;
+                buf->st_size = (uint32_t) (fcb_ptr->rrec) * 128;
+                errno = 0x0;
+                return 0;
                 break;
-
             }
-            break;
-        default:
-            printf("unhandled, rval = %d\n", rval);
-            exit(1);
-            break;
-        }
-    }
+    
+    /* some kind of weird unknown/hardware error */
 
-done_counting:
-    printf("[records=%u, extents=%u, size=%lu bytes]\n", num_records, current_extent, (uint32_t) num_records * 128);
-    buf->st_mode = 0;
-    buf->st_mode |= S_IFREG;
-    buf->st_mode |= S_IREAD;
-    buf->st_mode |= S_IWRITE;
-    buf->st_atime = 0;
-    buf->st_mtime = 0;
-
-    //buf->st_size = ((num_records * 128) / 1024) + ((((num_records * 128) % 1024) ? 1 : 0)) * 1024;
-    buf->st_size = (uint32_t) num_records * 128;
-    errno = 0x0;
-    return 0;
+    errno = EIO;
+    return -1;
 
 }
-
 
 
 

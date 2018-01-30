@@ -72,7 +72,7 @@ void exit  (int c)
 void perror(const char *s)
 {
 
-	printf("perror %s: %s", (const char *) s, (const char *) strerror(errno));
+	printf("%s: %s", (const char *) s, (const char *) strerror(errno));
 
 }
 
