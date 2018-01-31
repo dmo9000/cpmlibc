@@ -73,9 +73,10 @@ ssize_t seq_read(int fd, void *buf, size_t count)
     required_module = (CFD[fd].offset / 524288);
     required_resv = (uint16_t) ((uint8_t) ((0x80 + required_module) & 0x00ff) << 8);
     required_extent = ((CFD[fd].offset / 16384) % 0x20);
-    required_block = (CFD[fd].offset / 128);
-    required_block -= (required_extent * 0x80);
-    required_block += 1;
+   // required_block = (CFD[fd].offset / 128);
+		required_block = ((CFD[fd].offset % 524288) % (EXTENT_SIZE)) / 128;
+    //required_block -= (required_extent * 0x80);
+    //required_block += 1;
 
     if (fcb_ptr->ex != required_extent) {
         fcb_ptr->resv = required_resv;
@@ -87,23 +88,26 @@ ssize_t seq_read(int fd, void *buf, size_t count)
         fcb_ptr->ex = required_extent;
     }
 
-    fcb_ptr->seqreq = (required_block - 1) % 80;
+    fcb_ptr->seqreq = (required_block) % 0x80;
+
+		/* Magic undocumented folding algorithm for crossing extent boundaries */
+
+		if (fcb_ptr->ex && fcb_ptr->seqreq == 0x0) {
+				fcb_ptr->ex --;
+				fcb_ptr->seqreq = 0x80;
+				}
 
 		memset(&dma_buffer, 0xFF, 128);
     cpm_setDMAAddr((uint16_t)dma_buffer);
 
+		
 
-/*
-    rval = cpm_performFileOp(fop_readSeqRecord, fcb_ptr);
-    ret_ba = get_ret_ba();
-    ret_hl = get_ret_hl();
-    rval2 = cpm_performFileOp(fop_updRandRecPtr, fcb_ptr);
-*/
 
-#define DEBUG_LIBCIO_READ
+//#define DEBUG_LIBCIO_READ
 #ifdef DEBUG_LIBCIO_READ
     printf("%s", TTY_FOREGROUND_RED);
 //    printf(" read ret.val=%02X, ret_ba=0x%04x ret_hl=0x%04x\n", rval, ret_ba, ret_hl);
+		printf("\n");
     printf("\tmodule ->\t  %02X\n", required_module);
     printf("\textent ->\t  %02X\n", required_extent);
     printf("\tblock  ->\t  %02X\n", required_block);
@@ -112,8 +116,6 @@ ssize_t seq_read(int fd, void *buf, size_t count)
     printf("\tex     ->\t  %02X\n", fcb_ptr->ex);
     printf("\trc     ->\t  %02X\n", fcb_ptr->rc);
     printf("\tsreq   ->\t  %02X\n", fcb_ptr->seqreq);
-//    printf("\trrec   ->\t%04X\n", fcb_ptr->rrec);
-//    printf("\trrecob ->\t  %02X\n", fcb_ptr->rrecob);
     printf("%s", TTY_FOREGROUND_WHITE);
 #endif /* DEBUG_LIBCIO_READ */
 
@@ -127,7 +129,7 @@ ssize_t seq_read(int fd, void *buf, size_t count)
 
 #ifdef DEBUG_LIBCIO_READ
 	printf("%s", TTY_FOREGROUND_RED);
-  printf(" read ret.val=%02X, ret_ba=0x%04x ret_hl=0x%04x\n", rval, ret_ba, ret_hl);
+  printf("\tread ret.val=%02X, ret_ba=0x%04x ret_hl=0x%04x\n", rval, ret_ba, ret_hl);
   printf("\trrec   ->\t%04X\n", fcb_ptr->rrec);
   printf("\trrecob ->\t  %02X\n", fcb_ptr->rrecob);
 	printf("%s", TTY_FOREGROUND_WHITE);	
@@ -138,14 +140,14 @@ ssize_t seq_read(int fd, void *buf, size_t count)
         switch(cpm_err) {
         case 0x01:
             /* end of file - return 0 to caller, clear errno */
-            printf("\n# EOF?: ret.val=%02X, ret_ba=0x%04x ret_hl=0x%04x, CPM_ERR=%d\n", rval, ret_ba, ret_hl, cpm_err);
-            printf("/* read() hit EOF */\n");
-						for (i = 0; i < 8; i++) {
-							for (j = 0; j < 16; j++) {
-								printf("%02x ", dma_buffer[(i*16) + j]);
-								}
-								printf("\n");
-						}
+//            printf("\n# EOF?: ret.val=%02X, ret_ba=0x%04x ret_hl=0x%04x, CPM_ERR=%d\n", rval, ret_ba, ret_hl, cpm_err);
+//            printf("/* read() hit EOF */\n");
+//						for (i = 0; i < 8; i++) {
+//							for (j = 0; j < 16; j++) {
+//								printf("%02x ", dma_buffer[(i*16) + j]);
+//								}
+//								printf("\n");
+//						}
             errno = 0;
             return 0;
             break;
