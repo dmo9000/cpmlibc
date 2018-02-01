@@ -1,4 +1,4 @@
-MAXALLOCS=10000
+MAXALLOCS=200000
 #MAXALLOCS=5000
 #MAXALLOCS=1
 # cat /proc/cpuinfo | grep "^processor" | wc -l
@@ -13,8 +13,8 @@ IMGDIRS := $(shell ls -1  /media/sf_OSZ/systems/ 2>/dev/null )
 CPUCORES := $(shell nproc)
 THISBUILDID := $(shell cat build-id )
 
-all: 	bump-build-number libraries 
- 
+all: 	bump-build-number  
+		make -j $(CPUCORES) libraries 
  
 bump-build-number: 
 	./build-id.sh	
