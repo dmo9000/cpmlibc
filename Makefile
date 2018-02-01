@@ -1,5 +1,5 @@
-#MAXALLOCS=200000
-MAXALLOCS=5000
+MAXALLOCS=10000
+#MAXALLOCS=5000
 #MAXALLOCS=1
 # cat /proc/cpuinfo | grep "^processor" | wc -l
 #MAXALLOCS=100000
@@ -14,23 +14,21 @@ CPUCORES := $(shell nproc)
 THISBUILDID := $(shell cat build-id )
 
 all: 	bump-build-number libraries 
-
+ 
+ 
 bump-build-number: 
 	./build-id.sh	
 	@echo "+++ build-id for this build is ${THISBUILDID}"
 	@echo "+++ Using ${CPUCORES} available CPU cores"
 
-
 clean-arf:
 	find . -name "*.arf" -print -exec rm -f {} \;
 
 clean:	libraries-clean
-
 	find . -name "*.rel" ! -name "isr0.rel" -exec rm -f {} \;
 	find . -name "*.sym" -exec rm -f {} \;
 	find . -name "*.lst" -exec rm -f {} \;
 	find . -name "*.asm" -exec rm -f {} \;
-
 
 install: libraries-install
 
