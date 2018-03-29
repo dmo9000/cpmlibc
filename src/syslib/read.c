@@ -73,10 +73,7 @@ ssize_t seq_read(int fd, void *buf, size_t count)
     required_module = (CFD[fd].offset / 524288);
     required_resv = (uint16_t) ((uint8_t) ((0x80 + required_module) & 0x00ff) << 8);
     required_extent = ((CFD[fd].offset / 16384) % 0x20);
-   // required_block = (CFD[fd].offset / 128);
 		required_block = ((CFD[fd].offset % 524288) % (EXTENT_SIZE)) / 128;
-    //required_block -= (required_extent * 0x80);
-    //required_block += 1;
 
     if (fcb_ptr->ex != required_extent) {
         fcb_ptr->resv = required_resv;
@@ -99,9 +96,6 @@ ssize_t seq_read(int fd, void *buf, size_t count)
 
 		memset(&dma_buffer, 0xFF, 128);
     cpm_setDMAAddr((uint16_t)dma_buffer);
-
-		
-
 
 //#define DEBUG_LIBCIO_READ
 #ifdef DEBUG_LIBCIO_READ
@@ -164,8 +158,6 @@ ssize_t seq_read(int fd, void *buf, size_t count)
 
     /* update RR record */
 
-
-
     //rval2 = cpm_performFileOp(fop_updRandRecPtr, fcb_ptr);
 
     /* if we requested more bytes than are available, just copy those and return the value */
@@ -183,7 +175,5 @@ ssize_t seq_read(int fd, void *buf, size_t count)
 
     return limit;
 }
-
-
 
 
