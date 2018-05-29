@@ -91,10 +91,10 @@ int tcp_recv(int s, char *buf, uint8_t len)
     return (int8_t) net_dmabuffer[1];
 }
 
-int tcp_send(int s, char *buf, uint8_t len)
+int8_t tcp_send(int s, char *buf, uint8_t len)
 {
     uint16_t ptr = (uint16_t) buf;
-//    printf("\ntcp_recv(%d, 0x%04x, %u)\n", s, buf, len);
+    printf("\ntcp_send_libc(%d, 0x%04x, %u)\n", s, buf, len);
     memset(&net_dmabuffer, 0, 128);
     net_dmabuffer[0] = NET_TCP_SEND;
     net_dmabuffer[1] = s;
@@ -103,5 +103,6 @@ int tcp_send(int s, char *buf, uint8_t len)
     net_dmabuffer[4] = len;
     cpm_setDMAAddr((uint16_t) &net_dmabuffer);
     llnet();
+    printf("net_dmabuffer[1] = %d\n", net_dmabuffer[1]);
     return (int8_t) net_dmabuffer[1];
 }
