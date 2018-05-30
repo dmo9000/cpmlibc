@@ -1,8 +1,10 @@
+#include <stdio.h>
 #include <string.h>
 #include <errno.h>
 
 char *strerror(int en)
 {
+
     switch(en) {
     case 0:
         return (const char *) "Success";
@@ -30,6 +32,9 @@ char *strerror(int en)
         break;
     case EPIPE:
         return (const char *) "Transport endpoint not connected";
+        break;
+    case EAGAIN:
+        return (const char *) "Try again";
         break;
     }
 

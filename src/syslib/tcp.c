@@ -91,13 +91,19 @@ int tcp_recv(int s, char *buf, uint8_t len)
     net_dmabuffer[4] = len;
     cpm_setDMAAddr((uint16_t) &net_dmabuffer);
     llnet();
+    //printf("RECV:net_dmabuffer[1] = %d\n", (int8_t) net_dmabuffer[1]);
+    //printf("RECV:net_dmabuffer[2] = %d\n", (int8_t) net_dmabuffer[2]);
+    errno = net_dmabuffer[2];
+    if (net_dmabuffer[1] == 0xFF) {
+        return -1;
+    }
     return (int8_t) net_dmabuffer[1];
 }
 
 int tcp_send(int s, char *buf, uint8_t len)
 {
     uint16_t ptr = (uint16_t) buf;
-    printf("\ntcp_send_libc(%d, 0x%04x, %u)\n", s, buf, len);
+    //printf("\ntcp_send_libc(%d, 0x%04x, %u)\n", s, buf, len);
     if (len > 128) {
         printf("packet too long (%u)\n", len);
         exit(1);
@@ -110,8 +116,8 @@ int tcp_send(int s, char *buf, uint8_t len)
     net_dmabuffer[4] = len;
     cpm_setDMAAddr((uint16_t) &net_dmabuffer);
     llnet();
-    printf("SEND:net_dmabuffer[1] = %d\n", (int8_t) net_dmabuffer[1]);
-    printf("SEND:net_dmabuffer[2] = %d\n", (int8_t) net_dmabuffer[2]);
+    //printf("SEND:net_dmabuffer[1] = %d\n", (int8_t) net_dmabuffer[1]);
+    //printf("SEND:net_dmabuffer[2] = %d\n", (int8_t) net_dmabuffer[2]);
     errno = net_dmabuffer[2];
     if (net_dmabuffer[1] == 0xFF) {
         return -1;
