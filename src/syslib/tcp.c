@@ -2,9 +2,12 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
+#include <errno.h>
 #include "cpm_sysfunc.h"
 
 extern void llnet(void);
+
+extern int errno;
 
 uint8_t net_dmabuffer[128];
 
@@ -28,9 +31,9 @@ int tcp_connect(char *a, uint16_t p)
     z = strlen(a);
     for (i = 0; i < 4; i++) {
         switch (i) {
-         case 0:
-         case 1:
-         case 2:
+        case 0:
+        case 1:
+        case 2:
             p2 = memchr(p1, '.', z);
             p2[0] = '\0';
             o[i] = atoi(p1);
@@ -38,7 +41,7 @@ int tcp_connect(char *a, uint16_t p)
             break;
         case 3:
             o[i] = atoi(p1);
-            break; 
+            break;
         }
     }
 
@@ -56,10 +59,10 @@ int tcp_connect(char *a, uint16_t p)
     llnet();
     rc = (int8_t) net_dmabuffer[1];
     //printf("net_dmabuffer[1] = 0x%02x -> %d\n", net_dmabuffer[1], rc);
-    
+
     if (rc == 0xFF) {
         return -1;
-        }    
+    }
 
     return (int8_t) rc;
 }
@@ -91,10 +94,14 @@ int tcp_recv(int s, char *buf, uint8_t len)
     return (int8_t) net_dmabuffer[1];
 }
 
-int8_t tcp_send(int s, char *buf, uint8_t len)
+int tcp_send(int s, char *buf, uint8_t len)
 {
     uint16_t ptr = (uint16_t) buf;
     printf("\ntcp_send_libc(%d, 0x%04x, %u)\n", s, buf, len);
+    if (len > 128) {
+        printf("packet too long (%u)\n", len);
+        exit(1);
+    }
     memset(&net_dmabuffer, 0, 128);
     net_dmabuffer[0] = NET_TCP_SEND;
     net_dmabuffer[1] = s;
@@ -103,6 +110,11 @@ int8_t tcp_send(int s, char *buf, uint8_t len)
     net_dmabuffer[4] = len;
     cpm_setDMAAddr((uint16_t) &net_dmabuffer);
     llnet();
-    printf("net_dmabuffer[1] = %d\n", net_dmabuffer[1]);
+    printf("SEND:net_dmabuffer[1] = %d\n", (int8_t) net_dmabuffer[1]);
+    printf("SEND:net_dmabuffer[2] = %d\n", (int8_t) net_dmabuffer[2]);
+    errno = net_dmabuffer[2];
+    if (net_dmabuffer[1] == 0xFF) {
+        return -1;
+    }
     return (int8_t) net_dmabuffer[1];
 }

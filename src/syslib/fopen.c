@@ -28,27 +28,27 @@
 FILE *fopen(const char *path, const char *mode)
 {
     static struct stat statbuf;
-    int fd = -1; 
-    int fh = -1; 
-    int oflags = 0; 
+    int fd = -1;
+    int fh = -1;
+    int oflags = 0;
     FILE *myfhptr = NULL;
     ssize_t initial_size = 0;
     if (!_fds_init_done) {
         _fds_init();
     }
-    
+
     if (strncmp(mode, "r", 1) == 0) {
         oflags = O_RDONLY;
     }
-    
+
     if (strncmp(mode, "w", 1) == 0) {
         oflags = O_WRONLY | O_TRUNC;
     }
-    
+
     if (strncmp(mode, "r+", 2) == 0) {
         oflags = O_RDWR;
     }
-    
+
     if (strncmp(mode, "w+", 2) == 0) {
         oflags = O_RDWR | O_TRUNC;
     }

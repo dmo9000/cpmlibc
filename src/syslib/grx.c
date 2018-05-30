@@ -18,7 +18,7 @@ static uint8_t vid_dmabuffer[128];
 #define GRX_SETVIDMODE      7
 #define GRX_GETFONT         8
 #define GRX_SETFONT         9
-#define GRX_DRAWLINE        10 
+#define GRX_DRAWLINE        10
 */
 
 extern void llgrx(void);
@@ -77,7 +77,7 @@ void grx_drawline(uint8_t i, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
     //printf("grx_drawline(%u, (%u,%u)-(%u,%u)\n", i, x1, y1, x2, y2);
     memset(&vid_dmabuffer, 0, 128);
     vid_dmabuffer[0] = GRX_DRAWLINE;
-    vid_dmabuffer[1] = i; 
+    vid_dmabuffer[1] = i;
     vid_dmabuffer[2] = x1 & 0x00ff;
     vid_dmabuffer[3] = (x1 & 0xff00) >> 8;
     vid_dmabuffer[4] = y1 & 0x00ff;

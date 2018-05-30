@@ -80,7 +80,7 @@ int open(const char *pathname, int flags)
 
         if (rval != 0xFF) {
             //printf("File found, reading the FCB!\n");
-            //fcb_ptr->resv = 0x8080; 
+            //fcb_ptr->resv = 0x8080;
             errno = 0;
             goto return_valid_fd;
         } else {

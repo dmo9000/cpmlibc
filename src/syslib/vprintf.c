@@ -88,95 +88,95 @@ va_list args;
 
     tempfmt[0] = '%';
     while( (c = *format++) != 0) {
-	if(c=='%') {
-	    tp = &tempfmt[1];
+        if(c=='%') {
+            tp = &tempfmt[1];
 #ifndef LONGINT
-	    longflag = 0;
+            longflag = 0;
 #endif
 continue_format:
-	    switch(c = *format++) {
-		case 's':
-		    *tp++ = c;
-		    *tp = '\0';
-		    dp += Sprintf(dp, tempfmt, va_arg(args, char *));
-		    break;
-		case 'u':
-		case 'x':
-		case 'o':
-		case 'X':
+            switch(c = *format++) {
+            case 's':
+                *tp++ = c;
+                *tp = '\0';
+                dp += Sprintf(dp, tempfmt, va_arg(args, char *));
+                break;
+            case 'u':
+            case 'x':
+            case 'o':
+            case 'X':
 #ifdef UNSIGNEDSPECIAL
-		    *tp++ = c;
-		    *tp = '\0';
+                *tp++ = c;
+                *tp = '\0';
 #ifndef LONGINT
-		    if(longflag)
-			dp += Sprintf(dp, tempfmt, va_arg(args, unsigned long));
-		    else
+                if(longflag)
+                    dp += Sprintf(dp, tempfmt, va_arg(args, unsigned long));
+                else
 #endif
-			dp += Sprintf(dp, tempfmt, va_arg(args, unsigned));
-		    break;
+                    dp += Sprintf(dp, tempfmt, va_arg(args, unsigned));
+                break;
 #endif
-		case 'd':
-		case 'c':
-		case 'i':
-		    *tp++ = c;
-		    *tp = '\0';
+            case 'd':
+            case 'c':
+            case 'i':
+                *tp++ = c;
+                *tp = '\0';
 #ifndef LONGINT
-		    if(longflag)
-			dp += Sprintf(dp, tempfmt, va_arg(args, long));
-		    else
+                if(longflag)
+                    dp += Sprintf(dp, tempfmt, va_arg(args, long));
+                else
 #endif
-			dp += Sprintf(dp, tempfmt, va_arg(args, int));
-		    break;
-		case 'f':
-		case 'e':
-		case 'E':
-		case 'g':
-		case 'G':
-		    *tp++ = c;
-		    *tp = '\0';
-		    dp += Sprintf(dp, tempfmt, va_arg(args, double));
-		    break;
-		case 'p':
-		    *tp++ = c;
-		    *tp = '\0';
-		    dp += Sprintf(dp, tempfmt, va_arg(args, pointer));
-		    break;
-		case '-':
-		case '+':
-		case '0':
-		case '1':
-		case '2':
-		case '3':
-		case '4':
-		case '5':
-		case '6':
-		case '7':
-		case '8':
-		case '9':
-		case '.':
-		case ' ':
-		case '#':
-		case 'h':
-		    *tp++ = c;
-		    goto continue_format;
-		case 'l':
+                    dp += Sprintf(dp, tempfmt, va_arg(args, int));
+                break;
+            case 'f':
+            case 'e':
+            case 'E':
+            case 'g':
+            case 'G':
+                *tp++ = c;
+                *tp = '\0';
+                dp += Sprintf(dp, tempfmt, va_arg(args, double));
+                break;
+            case 'p':
+                *tp++ = c;
+                *tp = '\0';
+                dp += Sprintf(dp, tempfmt, va_arg(args, pointer));
+                break;
+            case '-':
+            case '+':
+            case '0':
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+            case '9':
+            case '.':
+            case ' ':
+            case '#':
+            case 'h':
+                *tp++ = c;
+                goto continue_format;
+            case 'l':
 #ifndef LONGINT
-		    longflag = 1;
-		    *tp++ = c;
+                longflag = 1;
+                *tp++ = c;
 #endif
-		    goto continue_format;
-		case '*':
-		    tp += Sprintf(tp, "%d", va_arg(args, int));
-		    goto continue_format;
-		case 'n':
-		    *va_arg(args, intp) = dp - dest;
-		    break;
-		case '%':
-		default:
-		    *dp++ = c;
-		    break;
-	    }
-	} else *dp++ = c;
+                goto continue_format;
+            case '*':
+                tp += Sprintf(tp, "%d", va_arg(args, int));
+                goto continue_format;
+            case 'n':
+                *va_arg(args, intp) = dp - dest;
+                break;
+            case '%':
+            default:
+                *dp++ = c;
+                break;
+            }
+        } else *dp++ = c;
     }
     *dp = '\0';
     return dp - dest;
@@ -198,99 +198,99 @@ va_list args;
 
     tempfmt[0] = '%';
     while(c = *format++) {
-	if(c=='%') {
-	    tp = &tempfmt[1];
+        if(c=='%') {
+            tp = &tempfmt[1];
 #ifndef LONGINT
-	    longflag = 0;
+            longflag = 0;
 #endif
 continue_format:
-	    switch(c = *format++) {
-		case 's':
-		    *tp++ = c;
-		    *tp = '\0';
-		    count += fprintf(dest, tempfmt, va_arg(args, char *));
-		    break;
-		case 'u':
-		case 'x':
-		case 'o':
-		case 'X':
+            switch(c = *format++) {
+            case 's':
+                *tp++ = c;
+                *tp = '\0';
+                count += fprintf(dest, tempfmt, va_arg(args, char *));
+                break;
+            case 'u':
+            case 'x':
+            case 'o':
+            case 'X':
 #ifdef UNSIGNEDSPECIAL
-		    *tp++ = c;
-		    *tp = '\0';
+                *tp++ = c;
+                *tp = '\0';
 #ifndef LONGINT
-		    if(longflag)
-			count += fprintf(dest, tempfmt, va_arg(args, unsigned long));
-		    else
+                if(longflag)
+                    count += fprintf(dest, tempfmt, va_arg(args, unsigned long));
+                else
 #endif
-			count += fprintf(dest, tempfmt, va_arg(args, unsigned));
-		    break;
+                    count += fprintf(dest, tempfmt, va_arg(args, unsigned));
+                break;
 #endif
-		case 'd':
-		case 'c':
-		case 'i':
-		    *tp++ = c;
-		    *tp = '\0';
+            case 'd':
+            case 'c':
+            case 'i':
+                *tp++ = c;
+                *tp = '\0';
 #ifndef LONGINT
-		    if(longflag)
-			count += fprintf(dest, tempfmt, va_arg(args, long));
-		    else
+                if(longflag)
+                    count += fprintf(dest, tempfmt, va_arg(args, long));
+                else
 #endif
-			count += fprintf(dest, tempfmt, va_arg(args, int));
-		    break;
-		case 'f':
-		case 'e':
-		case 'E':
-		case 'g':
-		case 'G':
-		    *tp++ = c;
-		    *tp = '\0';
-		    count += fprintf(dest, tempfmt, va_arg(args, double));
-		    break;
-		case 'p':
-		    *tp++ = c;
-		    *tp = '\0';
-		    count += fprintf(dest, tempfmt, va_arg(args, pointer));
-		    break;
-		case '-':
-		case '+':
-		case '0':
-		case '1':
-		case '2':
-		case '3':
-		case '4':
-		case '5':
-		case '6':
-		case '7':
-		case '8':
-		case '9':
-		case '.':
-		case ' ':
-		case '#':
-		case 'h':
-		    *tp++ = c;
-		    goto continue_format;
-		case 'l':
+                    count += fprintf(dest, tempfmt, va_arg(args, int));
+                break;
+            case 'f':
+            case 'e':
+            case 'E':
+            case 'g':
+            case 'G':
+                *tp++ = c;
+                *tp = '\0';
+                count += fprintf(dest, tempfmt, va_arg(args, double));
+                break;
+            case 'p':
+                *tp++ = c;
+                *tp = '\0';
+                count += fprintf(dest, tempfmt, va_arg(args, pointer));
+                break;
+            case '-':
+            case '+':
+            case '0':
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+            case '9':
+            case '.':
+            case ' ':
+            case '#':
+            case 'h':
+                *tp++ = c;
+                goto continue_format;
+            case 'l':
 #ifndef LONGINT
-		    longflag = 1;
-		    *tp++ = c;
+                longflag = 1;
+                *tp++ = c;
 #endif
-		    goto continue_format;
-		case '*':
-		    tp += Sprintf(tp, "%d", va_arg(args, int));
-		    goto continue_format;
-		case 'n':
-		    *va_arg(args, intp) = count;
-		    break;
-		case '%':
-		default:
-		    putc(c, dest);
-		    count++;
-		    break;
-	    }
-	} else {
-	    putc(c, dest);
-	    count++;
-	}
+                goto continue_format;
+            case '*':
+                tp += Sprintf(tp, "%d", va_arg(args, int));
+                goto continue_format;
+            case 'n':
+                *va_arg(args, intp) = count;
+                break;
+            case '%':
+            default:
+                putc(c, dest);
+                count++;
+                break;
+            }
+        } else {
+            putc(c, dest);
+            count++;
+        }
     }
     return count;
 }

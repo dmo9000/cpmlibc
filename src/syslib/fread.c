@@ -44,11 +44,11 @@ size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream)
             stream->_eof = true;
             //printf("HARD EOF REACHED\n");
             //exit(1);
-					/*
+            /*
             if (ftell(stream) != stream->_limit) {
-                printf("HARD EOF REACHED, BUT LIMIT IS MISMATCHED\n");
+            printf("HARD EOF REACHED, BUT LIMIT IS MISMATCHED\n");
             }
-					*/
+            */
         }
 
         if (rd == -1) {

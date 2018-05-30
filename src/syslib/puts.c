@@ -10,5 +10,5 @@ int puts(char *s)
     }
 
     return 0;
-    
+
 }

@@ -45,63 +45,63 @@ static char *destination_;
 static int
 append (int c)
 {
-  if (available_ <= 0)
-    return -1;
-  *destination_++ = c;
-  --available_;
-  return c;
+    if (available_ <= 0)
+        return -1;
+    *destination_++ = c;
+    --available_;
+    return c;
 }
 
 static int
 call_vuprintf (const char *fmt, va_list argp)
 {
-  char *destination = destination_;
-  int available = available_;
-  int rc;
+    char *destination = destination_;
+    int available = available_;
+    int rc;
 
-  rc = vuprintf (append, fmt, argp);
-  va_end (argp);
-  if (rc >= available)
-    destination[available - 1] = 0;
-  else
-    *destination_ = 0;
-  return rc;
+    rc = vuprintf (append, fmt, argp);
+    va_end (argp);
+    if (rc >= available)
+        destination[available - 1] = 0;
+    else
+        *destination_ = 0;
+    return rc;
 }
 
 int
 sprintf (char *buf, const char *fmt, ...)
 {
-  va_list argp;
+    va_list argp;
 
-  va_start (argp, fmt);
-  destination_ = buf;
-  available_ = INT_MAX;
-  return call_vuprintf (fmt, argp);
+    va_start (argp, fmt);
+    destination_ = buf;
+    available_ = INT_MAX;
+    return call_vuprintf (fmt, argp);
 }
 
 int
 snprintf (char *buf, size_t size, const char *fmt, ...)
 {
-  va_list argp;
+    va_list argp;
 
-  va_start (argp, fmt);
-  destination_ = buf;
-  available_ = size;
-  return call_vuprintf (fmt, argp);
+    va_start (argp, fmt);
+    destination_ = buf;
+    available_ = size;
+    return call_vuprintf (fmt, argp);
 }
 
 int
 vsprintf (char *buf, const char *fmt, va_list argp)
 {
-  destination_ = buf;
-  available_ = INT_MAX;
-  return call_vuprintf (fmt, argp);
+    destination_ = buf;
+    available_ = INT_MAX;
+    return call_vuprintf (fmt, argp);
 }
 
 int
 vsnprintf (char *buf, size_t size, const char *fmt, va_list argp)
 {
-  destination_ = buf;
-  available_ = size;
-  return call_vuprintf (fmt, argp);
+    destination_ = buf;
+    available_ = size;
+    return call_vuprintf (fmt, argp);
 }

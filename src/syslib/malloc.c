@@ -5,7 +5,7 @@
 #include <sys/types.h>
 
 /*
-	From: 
+	From:
 			https://danluu.com/malloc-tutorial/
 
  */
@@ -18,10 +18,10 @@ struct block_meta *get_block_ptr(void *ptr) {
 
 struct block_meta *request_space(struct block_meta* last, size_t size) {
     struct block_meta *block;
-	void *request = NULL;
+    void *request = NULL;
     block = sbrk(0);
     printf("block = 0x%04x\n", block);
-   // printf("META_SIZE = 0x%04x\n", META_SIZE);
+    // printf("META_SIZE = 0x%04x\n", META_SIZE);
 
     printf("calling sbrk(%u)\n", size+ META_SIZE);
     request = sbrk(size + META_SIZE);
@@ -82,31 +82,31 @@ void *_z80malloc(size_t size) {
         if (!block) { // Failed to find free block.
             block = request_space(last, size);
             if (!block) {
-                printf("runned out of space? no block!\n"); 
+                printf("runned out of space? no block!\n");
                 return NULL;
             }
         } else {      // Found free block
             // TODO: consider splitting block here.
-            printf("found free block\n"); 
+            printf("found free block\n");
             block->free = 0;
             block->magic = 0x77777777;
         }
     }
 
-    printf("returning block + 1\n"); 
+    printf("returning block + 1\n");
     return(block+1);
 }
 
 void _z80free(void *ptr) {
-		struct block_meta* block_ptr = NULL;
+    struct block_meta* block_ptr = NULL;
     if (!ptr) {
         return;
     }
 
     // TODO: consider merging blocks once splitting blocks is implemented.
     block_ptr = get_block_ptr(ptr);
-   // assert(block_ptr->free == 0);
-   // assert(block_ptr->magic == 0x77777777 || block_ptr->magic == 0x12345678);
+    // assert(block_ptr->free == 0);
+    // assert(block_ptr->magic == 0x77777777 || block_ptr->magic == 0x12345678);
     block_ptr->free = 1;
     block_ptr->magic = 0x55555555;
 }

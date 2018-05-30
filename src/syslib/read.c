@@ -47,7 +47,7 @@ ssize_t seq_read(int fd, void *buf, size_t count)
     uint16_t required_block = 0;
     uint16_t required_resv = 0;
     bool flag_reopen = false;
-		uint8_t i = 0, j = 0;
+    uint8_t i = 0, j = 0;
 
     if (!_fds_init_done) {
         _fds_init();
@@ -73,7 +73,7 @@ ssize_t seq_read(int fd, void *buf, size_t count)
     required_module = (CFD[fd].offset / 524288);
     required_resv = (uint16_t) ((uint8_t) ((0x80 + required_module) & 0x00ff) << 8);
     required_extent = ((CFD[fd].offset / 16384) % 0x20);
-		required_block = ((CFD[fd].offset % 524288) % (EXTENT_SIZE)) / 128;
+    required_block = ((CFD[fd].offset % 524288) % (EXTENT_SIZE)) / 128;
 
     if (fcb_ptr->ex != required_extent) {
         fcb_ptr->resv = required_resv;
@@ -87,25 +87,25 @@ ssize_t seq_read(int fd, void *buf, size_t count)
 
     fcb_ptr->seqreq = (required_block) % 0x80;
 
-		/* Magic undocumented folding algorithm for crossing extent boundaries */
+    /* Magic undocumented folding algorithm for crossing extent boundaries */
 
-		if (fcb_ptr->ex && fcb_ptr->seqreq == 0x0) {
-				fcb_ptr->ex --;
-				fcb_ptr->seqreq = 0x80;
-				}
+    if (fcb_ptr->ex && fcb_ptr->seqreq == 0x0) {
+        fcb_ptr->ex --;
+        fcb_ptr->seqreq = 0x80;
+    }
 
-		memset(&dma_buffer, 0xFF, 128);
+    memset(&dma_buffer, 0xFF, 128);
     cpm_setDMAAddr((uint16_t)dma_buffer);
 
 //#define DEBUG_LIBCIO_READ
 #ifdef DEBUG_LIBCIO_READ
     printf("%s", TTY_FOREGROUND_RED);
 //    printf(" read ret.val=%02X, ret_ba=0x%04x ret_hl=0x%04x\n", rval, ret_ba, ret_hl);
-		printf("\n");
+    printf("\n");
     printf("\tmodule ->\t  %02X\n", required_module);
     printf("\textent ->\t  %02X\n", required_extent);
     printf("\tblock  ->\t  %02X\n", required_block);
-		printf("\t--\n");
+    printf("\t--\n");
     printf("\ts1s2   ->\t%04X\n", fcb_ptr->resv);
     printf("\tex     ->\t  %02X\n", fcb_ptr->ex);
     printf("\trc     ->\t  %02X\n", fcb_ptr->rc);
@@ -117,16 +117,16 @@ ssize_t seq_read(int fd, void *buf, size_t count)
     ret_ba = get_ret_ba();
     ret_hl = get_ret_hl();
 
-		if (rval == 0) {
-  	  rval2 = cpm_performFileOp(fop_updRandRecPtr, fcb_ptr);
-			}
+    if (rval == 0) {
+        rval2 = cpm_performFileOp(fop_updRandRecPtr, fcb_ptr);
+    }
 
 #ifdef DEBUG_LIBCIO_READ
-	printf("%s", TTY_FOREGROUND_RED);
-  printf("\tread ret.val=%02X, ret_ba=0x%04x ret_hl=0x%04x\n", rval, ret_ba, ret_hl);
-  printf("\trrec   ->\t%04X\n", fcb_ptr->rrec);
-  printf("\trrecob ->\t  %02X\n", fcb_ptr->rrecob);
-	printf("%s", TTY_FOREGROUND_WHITE);	
+    printf("%s", TTY_FOREGROUND_RED);
+    printf("\tread ret.val=%02X, ret_ba=0x%04x ret_hl=0x%04x\n", rval, ret_ba, ret_hl);
+    printf("\trrec   ->\t%04X\n", fcb_ptr->rrec);
+    printf("\trrecob ->\t  %02X\n", fcb_ptr->rrecob);
+    printf("%s", TTY_FOREGROUND_WHITE);
 #endif /* DEBUG_LIBCIO_READ */
 
     if (rval != 0) {
@@ -145,10 +145,10 @@ ssize_t seq_read(int fd, void *buf, size_t count)
             errno = 0;
             return 0;
             break;
-				default: 
+        default:
             printf("\n# READ_FAIL: ret.val=%02X, ret_ba=0x%04x ret_hl=0x%04x, CPM_ERR=%d\n", rval, ret_ba, ret_hl, cpm_err);
-						exit(1);
-						break;
+            exit(1);
+            break;
         }
 
         /* something bad happened? */

@@ -59,7 +59,7 @@ void term_ANSIDirectCursorAddr(uint8_t column, uint8_t line) {
 	cmd[6] = (column / 10) + 0x30;
 	column -= (10 * (column / 10));
 	cmd[7] = column + 0x30;
-	
+
 	cmd[1] = (line / 100) + 0x30;
 	line -= (100 * (line / 100));
 	cmd[2] = (line / 10) + 0x30;
@@ -111,7 +111,7 @@ void term_ANSIClrLine(EraseDir dir) {
 		case ed_erase_all:
 		default:
 			cmd[1] = '2';
-			break;		
+			break;
 	}
 
 	term_sendCommand(cmd);
@@ -165,7 +165,7 @@ void term_ANSISetParam(uint8_t prm) {
 
 	cmd[idx - 1] = 'm';
 	cmd[idx] = '\0';
-	
+
 	term_sendCommand(cmd);
 }
 
@@ -182,7 +182,7 @@ void term_ANSIIndex(void) {
 }
 
 void term_ANSIReverseIndex(void) {
-	term_sendCommand(ANSI_REVIDX);	
+	term_sendCommand(ANSI_REVIDX);
 }
 
 void term_sendCommand(char *cmd) {
@@ -200,34 +200,34 @@ void term_sendCommand(char *cmd) {
 void set_term(tty_type t)
 {
     TERM=t;
-} 
+}
 
 
-void 
+void
 term_reset ()
 {
 
-      switch (TERM) {
-        case TERM_AMSTRAD3:
-						puts("+++ Not supported.\n");
-						exit(1);
-						break;
-        case TERM_VT52:
-						puts("+++ Not supported.\n");
-						exit(1);
-            break;
-        case TERM_ANSI:
-            printf ("%c[37m%c[40m%cc", CHAR_ESCAPE, CHAR_ESCAPE, CHAR_ESCAPE);
-            break;
-        case TERM_VT100:
-            printf ("%c[37m%c[40m%cc", CHAR_ESCAPE, CHAR_ESCAPE, CHAR_ESCAPE);
-            break;
-        default:
-						puts("+++ Not supported.\n");
-						exit(1);
-            break;
-        };
-   	return; 
+    switch (TERM) {
+    case TERM_AMSTRAD3:
+        puts("+++ Not supported.\n");
+        exit(1);
+        break;
+    case TERM_VT52:
+        puts("+++ Not supported.\n");
+        exit(1);
+        break;
+    case TERM_ANSI:
+        printf ("%c[37m%c[40m%cc", CHAR_ESCAPE, CHAR_ESCAPE, CHAR_ESCAPE);
+        break;
+    case TERM_VT100:
+        printf ("%c[37m%c[40m%cc", CHAR_ESCAPE, CHAR_ESCAPE, CHAR_ESCAPE);
+        break;
+    default:
+        puts("+++ Not supported.\n");
+        exit(1);
+        break;
+    };
+    return;
 }
 
 
@@ -235,26 +235,26 @@ void
 clear_screen ()
 {
 
-   switch (TERM) {
-        case TERM_AMSTRAD3:
-						puts("+++ Not supported.\n");
-						exit(1);
-        case TERM_VT52:
-            printf ("%cH%cJ", CHAR_ESCAPE, CHAR_ESCAPE);
-            break;
-        case TERM_ANSI:
-            printf ("%c[H%c[2J", CHAR_ESCAPE, CHAR_ESCAPE);
-            printf ("%c[1;1H", CHAR_ESCAPE);
-						break;
-        case TERM_VT100:
-            printf ("%c[H%c[2J", CHAR_ESCAPE, CHAR_ESCAPE);
-            printf ("%c[1;1H", CHAR_ESCAPE);
-            break;
-        default:
-						puts("+++ Not supported.\n");
-						exit(1);
-            break;
-        };
+    switch (TERM) {
+    case TERM_AMSTRAD3:
+        puts("+++ Not supported.\n");
+        exit(1);
+    case TERM_VT52:
+        printf ("%cH%cJ", CHAR_ESCAPE, CHAR_ESCAPE);
+        break;
+    case TERM_ANSI:
+        printf ("%c[H%c[2J", CHAR_ESCAPE, CHAR_ESCAPE);
+        printf ("%c[1;1H", CHAR_ESCAPE);
+        break;
+    case TERM_VT100:
+        printf ("%c[H%c[2J", CHAR_ESCAPE, CHAR_ESCAPE);
+        printf ("%c[1;1H", CHAR_ESCAPE);
+        break;
+    default:
+        puts("+++ Not supported.\n");
+        exit(1);
+        break;
+    };
 
 }
 
@@ -262,27 +262,27 @@ clear_screen ()
 void
 set_cursor(int x, int y)
 {
-   //printf("setcursor(%d, %d)\n", x, y);
-   switch (TERM) {
-        case TERM_AMSTRAD3:
-						puts("+++ Not supported.\n");
-						exit(1);
-        case TERM_VT52:
-						puts("+++ Not supported.\n");
-						exit(1);
-            break;
-        case TERM_ANSI:
-            printf ("%c[%d;%dH", CHAR_ESCAPE, y+1, x+1);
-						break;
-        case TERM_VT100:
-            printf ("%c[%d;%dH", CHAR_ESCAPE, y+1, x+1);
-            //printf("ANSI_setcursor(%d,%d)", x, y); 
-            break;
-        default:
-						puts("+++ Not supported.\n");
-						exit(1);
-            break;
-        };
+    //printf("setcursor(%d, %d)\n", x, y);
+    switch (TERM) {
+    case TERM_AMSTRAD3:
+        puts("+++ Not supported.\n");
+        exit(1);
+    case TERM_VT52:
+        puts("+++ Not supported.\n");
+        exit(1);
+        break;
+    case TERM_ANSI:
+        printf ("%c[%d;%dH", CHAR_ESCAPE, y+1, x+1);
+        break;
+    case TERM_VT100:
+        printf ("%c[%d;%dH", CHAR_ESCAPE, y+1, x+1);
+        //printf("ANSI_setcursor(%d,%d)", x, y);
+        break;
+    default:
+        puts("+++ Not supported.\n");
+        exit(1);
+        break;
+    };
 
 }
 
@@ -305,10 +305,10 @@ void set_reverse(bool state)
         }
         break;
     case false:
-   switch (TERM) {
+        switch (TERM) {
         case TERM_AMSTRAD3:
             printf("%cq", CHAR_ESCAPE);
-						break;
+            break;
         case TERM_VT52:
             break;
         case TERM_ANSI:
@@ -327,13 +327,13 @@ void set_reverse(bool state)
 void show_cursor(bool state)
 {
     switch (state) {
-        case true:
-            printf("\x1b[?25h");
-            break;
-        case false:
-            printf("\x1b[?25l");
-            break;
-        }
+    case true:
+        printf("\x1b[?25h");
+        break;
+    case false:
+        printf("\x1b[?25l");
+        break;
+    }
 }
 
 
